@@ -21,7 +21,7 @@ public interface Calendar {
      * access token and refresh token further.
      * @param code auth code
      * @param id user Id
-     * @throws Exception
+     * @throws Exception generic exception
      */
     void saveAccessToken(String code, String id) throws Exception;
 
@@ -29,7 +29,7 @@ public interface Calendar {
      * Retrieves event from calendar
      * @param calId calendar id(One google calendar can have multiple calendars at same time)
      * @return JSON objects of calendar returned events
-     * @throws Exception
+     * @throws Exception generic exception
      */
     org.json.JSONObject retrieveEvents(String calId) throws Exception;
 

@@ -22,7 +22,8 @@ public class AuthTokenAuthenticationFilter {
 	protected AuthenticationManager authenticationManager;
 
 	/**
-	 * @param id
+	 * 
+	 * @param id the primary key of Token table
 	 */
 	public void doFilter(String id) {
 		// get Token from DB

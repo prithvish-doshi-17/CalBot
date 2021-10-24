@@ -21,7 +21,7 @@ public class CalBotApplication {
 
     /**
      * Runs the Spring application
-     * @param args
+     * @param args application arguments
      */
     public static void main(String[] args) {
         SpringApplication.run(CalBotApplication.class, args);

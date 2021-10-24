@@ -46,8 +46,8 @@ public class Controller {
     /**
      * This function contains the logic to re-arrange all events on the basis of priority and
      * suggest most optimal ones for today/week.
-     * @return
-     * @throws Exception
+     * @return arrange result
+     * @throws Exception generic exception 
      */
     //TODO: Change return type to JSON objects
     public String arrangeEvents() throws Exception {
@@ -139,8 +139,8 @@ public class Controller {
 
     /**
      * To get URL for OAUTH 2.0
-     * @param discordId
-     * @param calType
+     * @param discordId primary key of Token table
+     * @param calType calendar type
      * @return URL
      */
     public String getUrl(String discordId, String calType) {

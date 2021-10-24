@@ -41,7 +41,7 @@ public class AuthenticationController {
 
     /**
      * Test endpoints, feel free to use them during development
-     * @throws Exception
+     * @return url for Google OAuth2 authentication
      */
     @RequestMapping(value = "/generate", method = RequestMethod.GET)
     public String authenticateTest() {
@@ -51,10 +51,9 @@ public class AuthenticationController {
 
     /**
      * Test endpoints, feel free to use them during development
-     * @throws Exception
      */
     @RequestMapping(value = "/retrieve", method = RequestMethod.GET)
-    public void summary() throws Exception{
+    public void summary(){
         Calendar calendar = calendarFactory.getCalendar("Google");
         //calendar.retrieveEvents(new JSONObject());
     }
