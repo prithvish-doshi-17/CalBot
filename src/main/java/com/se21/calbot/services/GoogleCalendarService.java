@@ -1,20 +1,12 @@
 package com.se21.calbot.services;
 
-import com.google.api.client.auth.oauth2.TokenResponse;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.calendar.CalendarScopes;
-import com.se21.calbot.controllers.Controller;
-import com.se21.calbot.enums.Enums;
-import com.se21.calbot.interfaces.Calendar;
-import com.se21.calbot.model.User;
-import com.se21.calbot.repositories.TokensRepository;
-import lombok.extern.java.Log;
+import static com.se21.calbot.enums.Enums.calApiResponse.Success;
+
+import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -31,15 +23,24 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.List;
+import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.calendar.CalendarScopes;
+import com.nimbusds.oauth2.sdk.util.StringUtils;
+import com.se21.calbot.enums.Enums;
+import com.se21.calbot.interfaces.Calendar;
+import com.se21.calbot.model.AuthToken;
+import com.se21.calbot.repositories.TokensRepository;
+import com.se21.calbot.security.AuthTokenAuthenticationFilter;
+import com.se21.calbot.security.AuthenticationService;
 
-import static com.se21.calbot.enums.Enums.calApiResponse.Failure;
-import static com.se21.calbot.enums.Enums.calApiResponse.Success;
+import lombok.extern.java.Log;
 
 /**
  * Google Calendar operations are managed through this class.
@@ -52,32 +53,23 @@ public class GoogleCalendarService implements Calendar {
     @Autowired
     TokensRepository tokensRepository;
     @Autowired
-    Controller controller;
-
-    User user;
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    AuthTokenAuthenticationFilter authTokenAuthenticationFilter;
+    @Autowired
+    AuthenticationService authenticationService;
+    @Autowired
+    GoogleClientSecrets clientSecrets;
+    
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final  List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
     CloseableHttpClient httpClient = HttpClients.createDefault();
-    private GoogleClientSecrets clientSecrets;
 
     //This is temporary hack, I believe we need one more common authenticator block or something
-    @Override
-    public void setUserVariable()
-    {
-        user = controller.getUser();
-    }
+
     @Override
     public String authenticate(String discordId) {
 
         try {
-            // Load client secrets.
-            InputStream in = GoogleCalendarService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-            if (in == null) {
-                throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
-            }
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-            clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
             // Build flow and trigger user authorization request.
             GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
@@ -94,8 +86,7 @@ public class GoogleCalendarService implements Calendar {
     }
 
     @Override
-    public void saveAccessToken(String authCode, String discordId) {
-
+    public void saveAccessToken(String authCode, String discordId) throws Exception {
         try {
             String clientId = clientSecrets.getWeb().getClientId();
             String clientSecret = clientSecrets.getWeb().getClientSecret();
@@ -111,26 +102,31 @@ public class GoogleCalendarService implements Calendar {
                 log.severe("Invalid response from Google Token API");
                 return;
             }
+            
+            AuthToken userToken = new AuthToken();
+            userToken.setDiscordId(discordId);
+            userToken.setToken(response.getAccessToken());
+            userToken.setCode(authCode);
+            userToken.setExpirydatetime(LocalDateTime.now().plusSeconds(response.getExpiresInSeconds()));
+            userToken.setScope(response.getScope());
 
-            user.setToken(response.getAccessToken());
-            user.setCode(authCode);
-            user.setExpiresInSeconds(response.getExpiresInSeconds());
-            user.setScope(response.getScope());
-            tokensRepository.save(user);
             //Once we have all the tokens we need to create a calendar to manage unscheduled events
             //Add condition if calendar already doesn't exist in the list of user accessible calendars
-
-            if(user.getCalId().isEmpty())
-            createNewUnscheduledCalendar();
-
+            if(StringUtils.isBlank(userToken.getCalId())) {
+            	userToken.setCalId(createNewUnscheduledCalendar(response.getAccessToken()));
+            }
+            tokensRepository.save(userToken);
+            
         } catch (Exception e) {
             log.severe("Google access token exception - " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
     }
 
     @Override
     public org.json.JSONObject retrieveEvents(String calId) throws Exception {
-        String access_token = user.getToken();
+        String access_token = authenticationService.getToken();
         String url = "https://www.googleapis.com/calendar/v3/calendars/" + calId + "/events?maxResults=20&access_token=" + access_token;
         HttpGet request = new HttpGet(url);
         //Todo: Add a filter to get events from now until end of current week only
@@ -175,9 +171,9 @@ public class GoogleCalendarService implements Calendar {
         DateTimeFormatter f = DateTimeFormat.forPattern("MM/dd/yyyy");
         DateTime endDt = f.parseDateTime(deadline);
 
-        String url = "https://www.googleapis.com/calendar/v3/calendars/"+user.getCalId() + "/events";
+        String url = "https://www.googleapis.com/calendar/v3/calendars/"+authenticationService.getCalId() + "/events";
         HttpPost request = new HttpPost(url);
-        request.setHeader("Authorization", "Bearer "+user.getToken());
+        request.setHeader("Authorization", "Bearer "+authenticationService.getToken());
         request.setHeader("Content-Type", "application/json");
 
         StringEntity body = null;
@@ -214,9 +210,7 @@ public class GoogleCalendarService implements Calendar {
     }
 
     @Override
-    public Enums.calApiResponse createNewUnscheduledCalendar() {
-
-        String access_token = user.getToken();
+    public String createNewUnscheduledCalendar(String access_token) {
         String url = "https://www.googleapis.com/calendar/v3/calendars";
         HttpPost request = new HttpPost(url);
         StringEntity params = null;
@@ -235,14 +229,13 @@ public class GoogleCalendarService implements Calendar {
             String content;
             if (entity != null) {
                 content = EntityUtils.toString(entity);
+                System.out.println(content);
                 org.json.JSONObject obj = new org.json.JSONObject(content);
-                user.setCalId(obj.getString("id"));//Need to store this id in Db
-                tokensRepository.save(user);
-                return Success;
+                return obj.getString("id");//Need to store this id in Db
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return Failure;
+        return "";
     }
 }

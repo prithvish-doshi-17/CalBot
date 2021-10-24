@@ -1,20 +1,20 @@
 package com.se21.calbot.controllers;
+import org.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.se21.calbot.enums.Enums;
 import com.se21.calbot.factories.CalendarFactory;
 import com.se21.calbot.interfaces.Calendar;
-import com.se21.calbot.model.User;
+import com.se21.calbot.model.AuthToken;
 import com.se21.calbot.repositories.TokensRepository;
+import com.se21.calbot.security.AuthTokenAuthenticationFilter;
+import com.se21.calbot.security.AuthenticationService;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
-import org.joda.time.DateTime;
-import org.json.JSONArray;
-import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 
 /**
@@ -38,26 +38,10 @@ public class Controller {
     CalendarFactory calendarFactory;
     @Autowired
     TokensRepository tokensRepository;
-    User user;
-
-    /**
-     * It will create a new entry in db for current user if it already doesn't exist.
-     * Else it will retrieve all existing data from db.
-     * @param discordId
-     */
-    public void initDb(String discordId)
-    {
-        user = tokensRepository.findById(discordId).orElse(null);
-        if(user == null)//To add element in db for first time
-        {
-            user = new User(discordId,
-                    "", "",0L, "",
-                    "", "Google","");
-            tokensRepository.save(user);
-        }
-        calObj = calendarFactory.getCalendar("Google");
-        calObj.setUserVariable();
-    }
+    @Autowired
+    AuthenticationService authenticationService;
+    @Autowired
+    AuthTokenAuthenticationFilter authTokenAuthenticationFilter;
 
     /**
      * This function contains the logic to re-arrange all events on the basis of priority and
@@ -68,7 +52,7 @@ public class Controller {
     //TODO: Change return type to JSON objects
     public String arrangeEvents() throws Exception {
         JSONArray scheduledEventList = calObj.retrieveEvents("primary").getJSONArray("items");
-        JSONArray unScheduledEventList = calObj.retrieveEvents(this.user.getCalId()).getJSONArray("items");
+        JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
 
         //Filter events for this week
 
@@ -135,7 +119,7 @@ public class Controller {
                         events += jsonLineItem.getString("summary") + "    " + jsonLineItem.getJSONObject("start").getString("dateTime") + "\n";
                     }
                     // Unscheduled events set in bot created aPAS calendar
-                    itemArray = calObj.retrieveEvents(user.getCalId()).getJSONArray("items");
+                    itemArray = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
                     for (int i = 0; i < itemArray.length(); i++) {
                         org.json.JSONObject jsonLineItem = itemArray.getJSONObject(i);
                         events += jsonLineItem.getString("summary") + "    " + jsonLineItem.getJSONObject("start").getString("dateTime") + "\n";
@@ -167,6 +151,15 @@ public class Controller {
         }
 
         return "";
+    }
+    
+    /**
+     * 
+     * authenticate the user token and put into SecurityContextHolder
+     * @param id the index of Table Token in database
+     */
+    public void initToken(String id) {
+    	authTokenAuthenticationFilter.doFilter(id);
     }
 }
 

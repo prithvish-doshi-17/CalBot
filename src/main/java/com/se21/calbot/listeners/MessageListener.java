@@ -1,14 +1,14 @@
 package com.se21.calbot.listeners;
 
-import com.se21.calbot.interfaces.ClientManager;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.se21.calbot.controllers.Controller;
 import com.se21.calbot.factories.clientFactory;
-import com.se21.calbot.repositories.TokensRepository;
+import com.se21.calbot.interfaces.ClientManager;
+
 import discord4j.core.object.entity.Message;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 /**
@@ -16,7 +16,6 @@ import reactor.core.publisher.Mono;
  */
 @Getter
 @Setter
-@Service
 public abstract class MessageListener {
     ClientManager clientObj;
 
@@ -24,8 +23,6 @@ public abstract class MessageListener {
     Controller controller;
     @Autowired
     clientFactory clientfactory;
-    @Autowired
-    TokensRepository tokensRepository;
 
     /**
      * If any event happens in chatBot, it will call processCommand. Further developer can filter
@@ -47,8 +44,8 @@ public abstract class MessageListener {
 
 
         clientObj = clientfactory.getClient("Discord");
-        clientObj.setClientId(author.getUsername()+author.getDiscriminator());
-        String response = clientObj.processInput(eventMessage.getContent());
+        String clientId = author.getUsername()+author.getDiscriminator();
+        String response = clientObj.processInput(clientId, eventMessage.getContent());
         return Mono.just(eventMessage)
                 .flatMap(Message::getChannel)
                 .flatMap(channel -> channel.createMessage("" + response))

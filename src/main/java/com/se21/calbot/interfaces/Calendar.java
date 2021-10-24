@@ -21,8 +21,9 @@ public interface Calendar {
      * access token and refresh token further.
      * @param code auth code
      * @param id user Id
+     * @throws Exception
      */
-    void saveAccessToken(String code, String id);
+    void saveAccessToken(String code, String id) throws Exception;
 
     /**
      * Retrieves event from calendar
@@ -57,12 +58,9 @@ public interface Calendar {
 
     /**
      * Create a new Unscheduled calendar in user's selected calendar
+     * @param accessToken the token string from OAuth2
      * @return Calendar response
      */
-    Enums.calApiResponse createNewUnscheduledCalendar();
+    String createNewUnscheduledCalendar(String accessToken);
 
-    /**
-     * This is temporary function, until spring session variables are not maintained
-     */
-    void setUserVariable();
 }

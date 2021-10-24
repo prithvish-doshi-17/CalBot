@@ -10,18 +10,6 @@ public interface ClientManager {
      * It will process any request for data update
      */
     void update();
-    /**
-     * It will set the value of a new clientId to session variables(currently they
-     * are local, later we will move them to Spring session variables)
-     */
-    void setClientId(String clientId);
-
-    /**
-     * To get the current sessions clientId, for some operations.
-     *
-     * @return clientId
-     */
-    String getClientId();
 
     /**
      * It processes the message to add any new details from user
@@ -49,10 +37,12 @@ public interface ClientManager {
     /**
      * This is first function which will be called by the eventListener.
      * Purpose is to do basic msg parsing and based on received input further call for next operation function.
+     * @param clientId It will set the value of a new clientId to session variables(currently they
+     * are local, later we will move them to Spring session variables)
      * @param msg raw_input from user
      * @return response
      */
-    String processInput(String msg);
+    String processInput(String clientId, String msg);
 
     /**
      * This will be used in future to make bot more interactive,

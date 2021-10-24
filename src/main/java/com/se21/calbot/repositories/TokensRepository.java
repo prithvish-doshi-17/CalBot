@@ -1,6 +1,6 @@
 package com.se21.calbot.repositories;
 
-import com.se21.calbot.model.User;
+import com.se21.calbot.model.AuthToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  * All db operations are managed using TokensRepository object in aPAS
  */
 @Repository
-public interface TokensRepository extends JpaRepository<User, String> {
+public interface TokensRepository extends JpaRepository<AuthToken, String> {
 }
