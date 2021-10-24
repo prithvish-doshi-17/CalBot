@@ -1,10 +1,14 @@
 package com.se21.calbot.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.se21.calbot.factories.CalendarFactory;
 import com.se21.calbot.interfaces.Calendar;
-import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 /**
  * This class serves as routing path controller. Any call to application/{route} will be handled here.
@@ -27,8 +31,12 @@ public class AuthenticationController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String token(@RequestParam String code, @RequestParam String state) {
         Calendar calendar = calendarFactory.getCalendar("Google");
-        calendar.saveAccessToken(code, state);
-        return "Auth completed successfully, please close this window and get back to discord bot!";
+        try {
+	        calendar.saveAccessToken(code, state);
+	        return "Auth completed successfully, please close this window and get back to discord bot!";
+        } catch(Exception e) {
+        	return "Auth fail, please try it later or notify developer!";
+        }
     }
 
     /**
