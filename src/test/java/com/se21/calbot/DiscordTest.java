@@ -14,7 +14,6 @@ import com.se21.calbot.controllers.Controller;
 /**
  * The tests for {@link com.se21.calbot.ClientManager.Discord Discord.java}
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = SpringUnitTestConfig.class)
 public class DiscordTest {
 	@Autowired
