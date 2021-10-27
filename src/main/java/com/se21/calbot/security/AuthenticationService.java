@@ -1,20 +1,17 @@
 package com.se21.calbot.security;
 
-import java.time.LocalDateTime;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-
 import com.se21.calbot.model.AuthToken;
 import com.se21.calbot.repositories.TokensRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 /**
  * Provide all information of user
  */
-@Component
+@Service
 public class AuthenticationService {
 	@Autowired
 	TokensRepository tokensRepository;

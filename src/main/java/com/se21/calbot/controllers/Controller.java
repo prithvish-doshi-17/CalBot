@@ -86,6 +86,7 @@ public class Controller {
     //Todo return type need to be changed to Json objects to make controller and client independent
     @SneakyThrows
     public String dataOperation(Enums.operationType opType, String ... msgParam){
+        calObj = calendarFactory.getCalendar("Google");
         switch(opType)
         {
             case Add:
