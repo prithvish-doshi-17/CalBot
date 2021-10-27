@@ -51,6 +51,7 @@ public class Controller {
      */
     //TODO: Change return type to JSON objects
     public String arrangeEvents() throws Exception {
+        calObj = calendarFactory.getCalendar("Google");
         JSONArray scheduledEventList = calObj.retrieveEvents("primary").getJSONArray("items");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
 
