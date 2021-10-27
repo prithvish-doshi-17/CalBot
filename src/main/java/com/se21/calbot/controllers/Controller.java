@@ -91,13 +91,14 @@ public class Controller {
         {
             case Add:
             {
-                if(msgParam.length != 3)
-                {
-                    //Some exception is needed and need to indicate user to enter in correct format
+                try {
+                    calObj.addEvents(msgParam[0], msgParam[1], msgParam[2]);//!Add title hoursNeeded deadline
+                    return "done";
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    return "Please type in the format: !add title hours mm/dd/yyyy";
                 }
 
-                calObj.addEvents(msgParam[0], msgParam[1], msgParam[2]);//!Add title hoursNeeded deadline
-                return "done";
             }
 
             case Delete:

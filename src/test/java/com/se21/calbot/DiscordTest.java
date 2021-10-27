@@ -46,5 +46,49 @@ public class DiscordTest {
 		// check if correct
 		assertEquals(expect, actual);
 	}
+    /**
+     * <p>
+     * 	Test target: {@link com.se21.calbot.ClientManager.Discord#processInput(String, String) processInput(String, String)}
+     * </p>
+     * When a user send a add command to DiscordBot with correct following,
+     * the robot sends string "done" back.
+     */
+    @Test
+    void processInputAddCorrectly() {
+        String ID = "alex1011150849";
+        String correctAddMsg = "!add SEclass 1 12/01/2021\n";
+
+        // actual return data
+        String actual = discord.processInput(ID, correctAddMsg);
+        // create an expect result
+        String expect = "done";
+
+        System.out.println(actual);
+        // check if correct
+        assertEquals(expect, actual);
+    }
+
+    /**
+     * <p>
+     * 	Test target: {@link com.se21.calbot.ClientManager.Discord#processInput(String, String) processInput(String, String)}
+     * </p>
+     * When a user send a add command to DiscordBot with wrong illegal input,
+     * the robot sends string "done" back.
+     */
+    @Test
+    void processInputAddWithIllegalInput() {
+        String ID = "alex1011150849";
+        String correctAddMsg = "!add SEclass 12/01/2021\n";
+
+        // actual return data
+        String actual = discord.processInput(ID, correctAddMsg);
+        // create an expect result
+        String expect = "Please type in the format: !add title hours mm/dd/yyyy";
+
+        System.out.println(actual);
+        // check if correct
+        assertEquals(expect, actual);
+    }
+
 
 }

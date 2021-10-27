@@ -69,7 +69,12 @@ public class Discord implements ClientManager {
 			switch (tokens[0]) {
 			case "!add": {
 				// The add logic will be added into add function later on.
-				return controller.dataOperation(Add, tokens[1], tokens[2], tokens[3]);
+                try {
+                    return controller.dataOperation(Add, tokens[1], tokens[2], tokens[3]);
+                } catch (Exception e) {
+                    System.out.println("ArrayIndexOutOfBoundsException: " + e.getMessage());
+                    return "Please type in the format: !add title hours mm/dd/yyyy";
+                }
 			}
 			case "!event": {
 				return controller.dataOperation(Retrieve);
