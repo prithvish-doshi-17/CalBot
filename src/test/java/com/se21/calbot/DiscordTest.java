@@ -156,8 +156,6 @@ public class DiscordTest {
         // create an expect result
         String expect = "Application Development Intern- Shao-Yo Chao    2021-09-03T10:30:00-04:00\n";
         //        + "SEclass#1    2021-10-28T19:37:20Z\n";
-        String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
-        System.out.println(timeStamp);
         System.out.println(actual);
         // check if correct
         assertEquals(expect, actual);
