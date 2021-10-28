@@ -80,7 +80,7 @@ public class DiscordTest {
      */
     @Test
     void processInputAddWithIllegalInput() {
-        String ID = "alex1011150849";
+        String ID = "";
         String correctAddMsg = "!add SEclass 12/01/2021T10:30\n";
 
         // actual return data
@@ -102,14 +102,13 @@ public class DiscordTest {
      */
     @Test
     void processInputEventWithCorrectInput() {
-        String ID = "alex1011150849";
+        String ID = "";
         String eventMsg = "!event\n";
 
         // actual return data
         String actual = discord.processInput(ID, eventMsg);
         // create an expect result
-        String expect = "Application Development Intern- Shao-Yo Chao    2021-09-03T10:30:00-04:00\n" ;
-        //        "SEclass#1    2021-10-28T19:37:20Z\n";
+        String expect = "";
 
         System.out.println(actual);
         // check if correct
@@ -148,14 +147,14 @@ public class DiscordTest {
      */
     @Test
     void processInputShowWithCorrectInput() {
-        String ID = "alex1011150849";
+        String ID = "";
         String showMsg = "!show\n";
 
         // actual return data
         String actual = discord.processInput(ID, showMsg);
         // create an expect result
-        String expect = "Application Development Intern- Shao-Yo Chao    2021-09-03T10:30:00-04:00\n";
-        //        + "SEclass#1    2021-10-28T19:37:20Z\n";
+        String expect = "";
+
         System.out.println(actual);
         // check if correct
         assertEquals(expect, actual);
