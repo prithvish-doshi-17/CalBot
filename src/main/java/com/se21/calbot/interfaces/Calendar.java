@@ -1,7 +1,6 @@
 package com.se21.calbot.interfaces;
 
 import com.se21.calbot.enums.Enums;
-import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 
 /**
@@ -48,7 +47,7 @@ public interface Calendar {
      * @param deadline deadline for this activity
      * @return Calendar response
      */
-    Enums.calApiResponse addEvents( String title, String hours, String deadline);
+    Enums.calApiResponse addEvents( String title, String hours, String deadline) throws Exception;
 
     /**
      * Deletes one or some event

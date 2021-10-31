@@ -166,7 +166,7 @@ public class GoogleCalendarService implements Calendar {
     }
 
     @Override
-    public Enums.calApiResponse addEvents(String title, String hours, String deadline) {
+    public Enums.calApiResponse addEvents(String title, String hours, String deadline) throws Exception {
         DateTime startDt = DateTime.now();
         DateTimeFormatter f = DateTimeFormat.forPattern("MM/dd/yyyy");
         DateTime endDt = f.parseDateTime(deadline);
@@ -182,6 +182,7 @@ public class GoogleCalendarService implements Calendar {
             body = new StringEntity(this.createAddEventBody(startDt, endDt, title +"#"+ hours).toString());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            throw e;
         }
 
         body.setContentType("application/json");
@@ -199,6 +200,7 @@ public class GoogleCalendarService implements Calendar {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
 
         return Success;

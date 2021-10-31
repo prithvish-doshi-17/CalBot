@@ -21,9 +21,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 /**
  * The tests for {@link com.se21.calbot.controllers.Controller Controller.java}
@@ -154,10 +156,24 @@ public class ControllerTest {
      * When operating Enums.operationType.Add with correct parameters, return "done"
      */
     @Test
-    public void dataOperationShouldReturnDone() throws Exception {
+    public void dataOperationAddShouldReturnDone() throws Exception {
         // mock a return result of googleCalendarService
         doReturn(Enums.calApiResponse.Success).when(googleCalendarService).addEvents(anyString(), anyString(), anyString());
         assertTrue(mockController.dataOperation(Enums.operationType.Add, "title", "hours", "deadline").equals("done"));
+    }
+
+    /**
+     * <p>
+     * Test target: {@link com.se21.calbot.controllers.Controller#dataOperation(Enums.operationType, String...) dataOperation(Enums.operationType, String...))}
+     * </p>
+     * after GoogleCalendarService throws exception, dataOperation will return error message
+     */
+    @Test
+    public void dataOperationAddShouldReturnErrorMsg() throws Exception {
+        // mock a return result of googleCalendarService
+        doThrow(new Exception()).when(googleCalendarService).addEvents(anyString(), anyString(), anyString());
+        assertEquals(mockController.dataOperation(Enums.operationType.Add, "title", "hours", "deadline")
+                , "Please type in the format: !add title hours mm/dd/yyyy");
     }
 
     /**
