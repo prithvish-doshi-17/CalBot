@@ -4,12 +4,9 @@
 name: Test Report
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
   workflow_run:
     workflows: ["PostgreSQL service"]
+    branches: [ feature/workflow ]
     types:
       - completed
 jobs:
@@ -31,4 +28,4 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Build with Maven
-        run: mvn -B package --file pom.xml -DskipTests
+        run: mvn clean test
