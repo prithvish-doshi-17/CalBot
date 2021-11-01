@@ -61,4 +61,6 @@ jobs:
         with:
           maven-version: 3.8.2
       - name: Build with Maven
+        env:
+          CALBOT_DISCORD_TOKEN: ${{ secrets.CALBOT_DISCORD_TOKEN }}
         run: mvn clean test
