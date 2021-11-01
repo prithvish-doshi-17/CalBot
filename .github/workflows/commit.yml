@@ -26,8 +26,6 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
     steps:
-      - name: Install Git
-        run: apt-get -y install git
       - uses: actions/checkout@v2
       - name: Set up JDK 8
         uses: actions/setup-java@v2
@@ -42,6 +40,7 @@ jobs:
         run: date +%s > report.txt
       - name: Commit report
         run: |
+          echo "root = ${{ github.action_path }}"
           git config --global user.name 'github-actions'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -am "Automated report"
