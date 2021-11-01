@@ -1,7 +1,7 @@
 name: Push commit
 on: push
 jobs:
-  container:
+  report:
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
     container: node:10.18-jessie
@@ -25,10 +25,9 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
-  report:
-    runs-on: ubuntu-latest
-
     steps:
+      - name: Install Git
+        run: apt-get -y install git
       - uses: actions/checkout@v2
       - name: Set up JDK 8
         uses: actions/setup-java@v2
