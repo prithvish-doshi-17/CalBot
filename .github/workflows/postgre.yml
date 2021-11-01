@@ -49,3 +49,6 @@ jobs:
           POSTGRES_HOST: postgres
           # The default PostgreSQL port
           POSTGRES_PORT: 5432
+
+      - name: Create Testing Report
+        run: mvn clean test
