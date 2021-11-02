@@ -1,9 +1,18 @@
 package com.se21.calbot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 
+import com.se21.calbot.factories.CalendarFactory;
+import com.se21.calbot.model.AuthToken;
+import com.se21.calbot.repositories.TokensRepository;
+import com.se21.calbot.services.GoogleCalendarService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -12,6 +21,7 @@ import com.se21.calbot.ClientManager.Discord;
 import com.se21.calbot.controllers.Controller;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 /**
@@ -23,9 +33,39 @@ public class DiscordTest {
 	Discord discord;
 	@Autowired
 	Controller controller;
-	
-	private static final String testId = "";
-	private static final String msg = "test";
+    @Autowired
+    TokensRepository tokensRepository;
+
+    @Mock
+    GoogleCalendarService googleCalendarService;
+    @Mock
+    CalendarFactory calendarFactory;
+    private final String calenderApiMockReturn = "{" +
+            "items:[{summary: 'test1', start:{dateTime:'2021/1/1'}}, " +
+            "{summary: 'test2', start:{ dateTime:'2021/1/1'}}]}";
+    @Mock
+    Discord mockDiscord;
+    @InjectMocks
+    Controller mockController;
+    private static final String existId = "test";
+    private static final String nonExistId = "test1";
+    private static final String testId = "";
+    private static final String msg = "test";
+
+    @BeforeEach
+    void init() {
+        // create a token for test
+        AuthToken token = new AuthToken();
+        token.setDiscordId(existId);
+        token.setToken("test");
+        token.setCalId("test");
+        token.setExpirydatetime(LocalDateTime.now().plusMinutes(10));
+        tokensRepository.save(token);
+
+        // return the mock service when calendarFactory is called in the mockController
+        doReturn(googleCalendarService).when(calendarFactory).getCalendar("Google");
+    }
+
 	/**
 	 * <p>
 	 * 	Test target: {@link com.se21.calbot.ClientManager.Discord#processInput(String, String) processInput(String, String)}
@@ -58,15 +98,13 @@ public class DiscordTest {
      */
     @Test
     void processInputAddCorrectly() {
-        String ID = "alex1011150849";
+        String ID = "test";
         String correctAddMsg = "!add SEclass 1 12/10/2021\n";
 
         // actual return data
         String actual = discord.processInput(ID, correctAddMsg);
         // create an expect result
         String expect = "done";
-
-        System.out.println(actual);
         // check if correct
         assertEquals(expect, actual);
     }
@@ -80,7 +118,7 @@ public class DiscordTest {
      */
     @Test
     void processInputAddWithIllegalInput() {
-        String ID = "";
+        String ID = "test";
         String correctAddMsg = "!add SEclass 12/01/2021T10:30\n";
 
         // actual return data
@@ -102,15 +140,16 @@ public class DiscordTest {
      */
     @Test
     void processInputEventWithCorrectInput() {
-        String ID = "";
+        String ID = "test";
         String eventMsg = "!event\n";
 
-        // actual return data
-        String actual = discord.processInput(ID, eventMsg);
-        // create an expect result
-        String expect = "";
+        doReturn("SEclass 1 12/10/2021").when(mockDiscord).processInput(ID, eventMsg);
 
-        System.out.println(actual);
+        // mocked actual return data
+        String actual = mockDiscord.processInput(ID, eventMsg);
+        // create an expect result
+        String expect = "SEclass 1 12/10/2021";
+
         // check if correct
         assertEquals(expect, actual);
     }
@@ -147,15 +186,16 @@ public class DiscordTest {
      */
     @Test
     void processInputShowWithCorrectInput() {
-        String ID = "";
+        String ID = "test";
         String showMsg = "!show\n";
 
-        // actual return data
-        String actual = discord.processInput(ID, showMsg);
-        // create an expect result
-        String expect = "";
+        doReturn("SEclass 1 12/10/2021").when(mockDiscord).processInput(ID, showMsg);
 
-        System.out.println(actual);
+        // mocked actual return data
+        String actual = mockDiscord.processInput(ID, showMsg);
+        // create an expect result
+        String expect = "SEclass 1 12/10/2021";
+
         // check if correct
         assertEquals(expect, actual);
     }
