@@ -85,7 +85,7 @@ Discord4J
 * (Optional) To start project using docker run the following command in main directory
 ````
 docker build . -t 'image-name' //Don't forget the dot
-docker run -dp 8080:8080 'image-name' //This will start app on port on 8080
+docker run -dp 8090:8090 'image-name' //This will start app on port on 8090
 ````
 * [Developer Guide](https://elric97.github.io/CalBot/) 
 

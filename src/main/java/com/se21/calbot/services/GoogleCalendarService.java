@@ -77,7 +77,7 @@ public class GoogleCalendarService implements Calendar {
                     .setAccessType("offline")
                     .build();
 
-            return flow.newAuthorizationUrl().setRedirectUri("http://localhost:8080/test").setState(discordId).build();
+            return flow.newAuthorizationUrl().setRedirectUri("http://localhost:8090/test").setState(discordId).build();
         } catch (Exception e) {
             log.severe("Google auth URL exception - " + e.getMessage());
         }
@@ -93,7 +93,7 @@ public class GoogleCalendarService implements Calendar {
 
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             TokenResponse response = new GoogleAuthorizationCodeTokenRequest(HTTP_TRANSPORT, JSON_FACTORY, clientId,
-                    clientSecret, authCode, "http://localhost:8080/test")
+                    clientSecret, authCode, "http://localhost:8090/test")
                     .setGrantType("authorization_code").execute();
 
             if(response == null || response.getAccessToken() == null
