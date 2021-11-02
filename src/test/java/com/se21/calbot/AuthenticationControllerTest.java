@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * The tests for {@link com.se21.calbot.controllers.AuthenticationController AuthenticationController.java}
  */
-@SpringBootTest
+@SpringBootTest(classes = SpringUnitTestConfig.class)
 @AutoConfigureMockMvc
 public class AuthenticationControllerTest {
 
