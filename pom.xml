@@ -228,7 +228,7 @@
           </reportSets>
         </plugin>
          
-       <!-- <plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-pmd-plugin</artifactId>
           <version>3.15.0</version>
@@ -239,7 +239,7 @@
               </reports>
             </reportSet>
           </reportSets>
-        </plugin> -->
+        </plugin>
       </plugins> 
      
     </reporting> 
