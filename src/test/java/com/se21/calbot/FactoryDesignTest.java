@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
 
-@SpringBootTest()
+@SpringBootTest(classes = SpringUnitTestConfig.class)
 public class FactoryDesignTest {
 
     /**

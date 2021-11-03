@@ -5,6 +5,7 @@
 [![Platform](https://img.shields.io/badge/platform-discord-blue)](https://discord.com/)
 [![GitHub issues open](https://img.shields.io/github/issues/prithvish-doshi-17/CalBot)](https://github.com/prithvish-doshi-17/CalBot/issues)
 [![GitHub issues closed](https://img.shields.io/github/issues-closed/prithvish-doshi-17/CalBot)](https://github.com/prithvish-doshi-17/CalBot/issues)
+<img src="./badges/jacoco.svg">
 # aPAS
 <p align = center>
   <a href="">
