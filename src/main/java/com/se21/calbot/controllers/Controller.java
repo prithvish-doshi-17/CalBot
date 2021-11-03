@@ -16,6 +16,9 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 
 /**
  * This is main controller class for whole aPAS. In block diagram of architecture, you can see this
@@ -54,27 +57,41 @@ public class Controller {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray scheduledEventList = calObj.retrieveEvents("primary").getJSONArray("items");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
+        JSONArray eventsToSchedule = new JSONArray();
+        String eventsThisWeek = "Here are the events for this week:\n";
 
         //Filter events for this week
-
-
-        //Make a list of all events
-
-        //Prioritise all unscheduled events
-
-
-        //Send the list to client to display
-        String events = "";
-        for (int i = 0; i < scheduledEventList.length(); i++) {
-            org.json.JSONObject jsonLineItem = scheduledEventList.getJSONObject(i);
-            events += jsonLineItem.getString("summary") + "    " + jsonLineItem.getJSONObject("start").getString("dateTime") + "\n";
-        }
-        // Unscheduled events set in bot created aPAS calendar
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        float hours = 0.0F;
         for (int i = 0; i < unScheduledEventList.length(); i++) {
             org.json.JSONObject jsonLineItem = unScheduledEventList.getJSONObject(i);
-            events += jsonLineItem.getString("summary") + "    " + jsonLineItem.getJSONObject("start").getString("dateTime") + "\n";
+            java.time.LocalDateTime event_deadline;
+            event_deadline = LocalDateTime.parse(jsonLineItem.getJSONObject("end").getString("dateTime").substring(0, 19));
+            Duration difference = Duration.between(now, event_deadline);
+            int days = (int) difference.toDays();
+
+            if (days <= 7 && days >= 0) {
+                String[] eventProperties = jsonLineItem.getString("summary").split("#");
+                eventsToSchedule.put(jsonLineItem);
+                hours = hours + Float.parseFloat(eventProperties[1]);
+                eventsThisWeek += jsonLineItem.getString("summary") + "    Deadline:(" +
+                        jsonLineItem.getJSONObject("end").getString("dateTime") + ",TZ:" +
+                        jsonLineItem.getJSONObject("end").getString("timeZone") + ")\n";
+            }
         }
-        return events;
+
+        //Prioritise all unscheduled events
+        float fraction = (hours / 70);
+        eventsThisWeek += "\nHere are the activities to do for today (and the number of hours to be dedicated):\n";
+        for (int i = 0; i < eventsToSchedule.length(); i++)
+        {
+            org.json.JSONObject jsonLineItem = eventsToSchedule.getJSONObject(i);
+            String[] eventProperties = jsonLineItem.getString("summary").split("#");
+            float numberOfHours = (float) Math.ceil(Float.parseFloat(eventProperties[1]) * fraction * 2) / 2;
+            eventsThisWeek += eventProperties[0] + " (Number of hours: " + numberOfHours + ")\n";
+        }
+
+        return eventsThisWeek;
     }
 
     /**
@@ -116,7 +133,7 @@ public class Controller {
                 try {
                     //  Scheduled events set in primary calendar
                     JSONArray itemArray = calObj.retrieveEvents("primary").getJSONArray("items");
-                    String events= "";
+                    String events= "Here are all the upcoming events on your calendar:\n";
                     for (int i = 0; i < itemArray.length(); i++) {
                         org.json.JSONObject jsonLineItem = itemArray.getJSONObject(i);
                         events += jsonLineItem.getString("summary") + "    " + jsonLineItem.getJSONObject("start").getString("dateTime") + "\n";

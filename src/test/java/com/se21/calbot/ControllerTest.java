@@ -132,7 +132,7 @@ public class ControllerTest {
     @Test
     public void getUrlShouldReturnOAuth2Link() throws Exception {
         // mock a return result of googleCalendarService
-        doReturn("http://localhost:8080/test").when(googleCalendarService).authenticate(anyString());
+        doReturn("http://localhost:8090/test").when(googleCalendarService).authenticate(anyString());
         assertTrue(controller.getUrl(existId, "Google").contains("test"));
     }
 
@@ -145,7 +145,7 @@ public class ControllerTest {
     @Test
     public void getUrlShouldNotReturnOAuth2Link() throws Exception {
         // mock a return result of googleCalendarService
-        doReturn("http://localhost:8080/test").when(googleCalendarService).authenticate(anyString());
+        doReturn("http://localhost:8090/test").when(googleCalendarService).authenticate(anyString());
         assertTrue(Strings.isBlank(controller.getUrl("test", "Facebook")));
     }
 
