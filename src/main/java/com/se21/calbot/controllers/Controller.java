@@ -97,7 +97,7 @@ public class Controller {
         return eventsThisWeek;
     }
 
-    public String deleteEvent(String title) throws Exception{
+    public String deleteEvent(String title) throws Exception {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
 
@@ -111,6 +111,21 @@ public class Controller {
             }
         }
         return "Please enter correct title for the event to be deleted";
+    }
+
+    public boolean eventExists(String title) throws Exception {
+        calObj = calendarFactory.getCalendar("Google");
+        JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
+
+        for (int i = 0; i < unScheduledEventList.length(); i++) {
+            org.json.JSONObject jsonLineItem = unScheduledEventList.getJSONObject(i);
+            String[] eventProperties = jsonLineItem.getString("summary").split("#");
+            if (title.equals(eventProperties[0]))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -129,8 +144,13 @@ public class Controller {
             case Add:
             {
                 try {
-                    calObj.addEvents(msgParam[0], msgParam[1], msgParam[2]);//!Add title hoursNeeded deadline
-                    return "done";
+                    if (eventExists(msgParam[0]))
+                        return "Event already exists on your calendar";
+                    else
+                    {
+                        calObj.addEvents(msgParam[0], msgParam[1], msgParam[2]);//!Add title hoursNeeded deadline
+                        return "Event added to your calendar!";
+                    }
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                     return "Please type in the format: !add title hours mm/dd/yyyy";
