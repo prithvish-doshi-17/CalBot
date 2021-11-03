@@ -1,7 +1,7 @@
 package com.se21.calbot.interfaces;
 
 import com.se21.calbot.enums.Enums;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 /**
  * This interface provides basic functionality for Calendar classes
@@ -47,7 +47,7 @@ public interface Calendar {
      * @param deadline deadline for this activity
      * @return Calendar response
      */
-    Enums.calApiResponse addEvents( String title, String hours, String deadline) throws Exception;
+    Enums.calApiResponse addEvents(String title, String hours, String deadline) throws Exception;
 
     /**
      * Deletes one or some event

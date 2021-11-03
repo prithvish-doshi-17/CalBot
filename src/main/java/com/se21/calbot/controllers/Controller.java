@@ -1,12 +1,12 @@
 package com.se21.calbot.controllers;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.se21.calbot.enums.Enums;
 import com.se21.calbot.factories.CalendarFactory;
 import com.se21.calbot.interfaces.Calendar;
-import com.se21.calbot.model.AuthToken;
 import com.se21.calbot.repositories.TokensRepository;
 import com.se21.calbot.security.AuthTokenAuthenticationFilter;
 import com.se21.calbot.security.AuthenticationService;
@@ -128,6 +128,24 @@ public class Controller {
         return false;
     }
 
+    public String updateEvent(String title, String hours, String deadline) throws Exception {
+        calObj = calendarFactory.getCalendar("Google");
+        JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
+        System.out.println(unScheduledEventList);
+        for (int i = 0; i < unScheduledEventList.length(); i++) {
+            JSONObject jsonLineItem = unScheduledEventList.getJSONObject(i);
+            String[] eventProperties = jsonLineItem.getString("summary").split("#");
+            if (title.equals(eventProperties[0]))
+            {
+//                calObj.updateEvents();
+                calObj.deleteEvents(jsonLineItem.getString("id"));
+                calObj.addEvents(eventProperties[0], hours, deadline);
+                return "Event updated successfully!";
+            }
+        }
+        return "Please enter correct title for the event to be updated";
+    }
+
     /**
      * This is single interface function for clientManager layer to directly call some
      * CRUD operation for calendar layer.
@@ -169,7 +187,14 @@ public class Controller {
             }
             case Create:
             case Update:
-                break;
+            {
+                try {
+                    return this.updateEvent(msgParam[0], msgParam[1], msgParam[2]);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    return "Please type in the format: !update title hours";
+                }
+            }
             case Optimise:
             {
                 return this.arrangeEvents();

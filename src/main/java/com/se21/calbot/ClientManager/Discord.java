@@ -90,7 +90,21 @@ public class Discord implements ClientManager {
 			}
 
             case "!delete": {
-                return controller.dataOperation(Delete, tokens[1]);
+                try {
+                    return controller.dataOperation(Delete, tokens[1]);
+                } catch (Exception e) {
+                    System.out.println("ArrayIndexOutOfBoundsException: " + e.getMessage());
+                    return "Please type in the format: !delete title";
+                }
+            }
+
+            case "!update": {
+                try {
+                    return controller.dataOperation(Update, tokens[1], tokens[2], tokens[3]);
+                } catch (Exception e) {
+                    System.out.println("ArrayIndexOutOfBoundsException: " + e.getMessage());
+                    return "Please type in the format: !update title new_hours new_deadline";
+                }
             }
 			default:
 				return "The command '" + tokens[0] + "' is undefined. Please use the command as follow:\n"
