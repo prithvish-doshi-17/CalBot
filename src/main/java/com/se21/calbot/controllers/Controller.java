@@ -90,12 +90,15 @@ public class Controller {
         calObj = calendarFactory.getCalendar("Google");
         switch(opType)
         {
+
             case Add:
             {
                 try {
-                    calObj.addEvents(msgParam[0], msgParam[1], msgParam[2]);//!Add title hoursNeeded deadline
+                    //The format should be: title hoursNeeded deadline
+                    calObj.addEvents(msgParam[0], msgParam[1], msgParam[2]);
                     return "done";
                 } catch (Exception e) {
+                    //Throw exception if any part did not follow the format
                     System.out.println(e.getMessage());
                     return "Please type in the format: !add title hours mm/dd/yyyy";
                 }

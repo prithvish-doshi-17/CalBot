@@ -70,8 +70,10 @@ public class Discord implements ClientManager {
 			case "!add": {
 				// The add logic will be added into add function later on.
                 try {
+                    //Transfer the data to Controller.java by the following format: title hours date
                     return controller.dataOperation(Add, tokens[1], tokens[2], tokens[3]);
                 } catch (Exception e) {
+                    //Throw exception if any part did not follow the format
                     System.out.println("ArrayIndexOutOfBoundsException: " + e.getMessage());
                     return "Please type in the format: !add title hours mm/dd/yyyy";
                 }
