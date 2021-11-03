@@ -81,17 +81,36 @@ public class Controller {
         }
 
         //Prioritise all unscheduled events
-        float fraction = (hours / 70);
         eventsThisWeek += "\nHere are the activities to do for today (and the number of hours to be dedicated):\n";
         for (int i = 0; i < eventsToSchedule.length(); i++)
         {
             org.json.JSONObject jsonLineItem = eventsToSchedule.getJSONObject(i);
+            java.time.LocalDateTime event_deadline;
+            event_deadline = LocalDateTime.parse(jsonLineItem.getJSONObject("end").getString("dateTime").substring(0, 19));
+            Duration difference = Duration.between(now, event_deadline);
+            int days = (int) difference.toDays();
             String[] eventProperties = jsonLineItem.getString("summary").split("#");
-            float numberOfHours = (float) Math.ceil(Float.parseFloat(eventProperties[1]) * fraction * 2) / 2;
+            float numberOfHours = (float) Math.ceil(Float.parseFloat(eventProperties[1]) * 2 / days) / 2;
             eventsThisWeek += eventProperties[0] + " (Number of hours: " + numberOfHours + ")\n";
         }
 
         return eventsThisWeek;
+    }
+
+    public String deleteEvent(String title) throws Exception{
+        calObj = calendarFactory.getCalendar("Google");
+        JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
+
+        for (int i = 0; i < unScheduledEventList.length(); i++) {
+            org.json.JSONObject jsonLineItem = unScheduledEventList.getJSONObject(i);
+            String[] eventProperties = jsonLineItem.getString("summary").split("#");
+            if (title.equals(eventProperties[0]))
+            {
+                calObj.deleteEvents(jsonLineItem.getString("id"));
+                return "Event deleted successfully!";
+            }
+        }
+        return "Please enter correct title for the event to be deleted";
     }
 
     /**
@@ -120,6 +139,14 @@ public class Controller {
             }
 
             case Delete:
+            {
+                try {
+                    return this.deleteEvent(msgParam[0]);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    return "Please type in the format: !delete title";
+                }
+            }
             case Create:
             case Update:
                 break;

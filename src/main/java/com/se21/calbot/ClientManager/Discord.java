@@ -1,15 +1,13 @@
 package com.se21.calbot.ClientManager;
 
-import static com.se21.calbot.enums.Enums.operationType.Add;
-import static com.se21.calbot.enums.Enums.operationType.Optimise;
-import static com.se21.calbot.enums.Enums.operationType.Retrieve;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.se21.calbot.controllers.Controller;
 import com.se21.calbot.interfaces.ClientManager;
 import com.se21.calbot.security.AuthenticationService;
+
+import static com.se21.calbot.enums.Enums.operationType.*;
 
 /**
  * Discord class manages implementation specific to discord users
@@ -90,6 +88,10 @@ public class Discord implements ClientManager {
 			case "!show": {
 				return controller.dataOperation(Optimise);
 			}
+
+            case "!delete": {
+                return controller.dataOperation(Delete, tokens[1]);
+            }
 			default:
 				return "The command '" + tokens[0] + "' is undefined. Please use the command as follow:\n"
 						+ "!event: To see your scheduled events\n"

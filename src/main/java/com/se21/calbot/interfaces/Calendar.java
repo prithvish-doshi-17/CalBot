@@ -55,6 +55,8 @@ public interface Calendar {
      */
     Enums.calApiResponse deleteEvents();
 
+    Enums.calApiResponse deleteEvents(String eventId);
+
     /**
      * Create a new Unscheduled calendar in user's selected calendar
      * @param accessToken the token string from OAuth2
