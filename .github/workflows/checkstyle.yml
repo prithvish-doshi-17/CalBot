@@ -36,6 +36,6 @@ jobs:
       with:
         path: '**/checkstyle-result.xml'
     - name: create pmd report
-      uses: jwgmeligmeyling/checkstyle-github-action@master
+      uses: jwgmeligmeyling/pmd-github-action@master
       with:
         path: '**/pmd.xml'
