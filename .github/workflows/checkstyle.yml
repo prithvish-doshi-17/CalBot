@@ -28,9 +28,7 @@ jobs:
         distribution: 'adopt'
         cache: maven
     - name: Build with Maven
-      run: mvn -B verify checkstyle:checkstyle
+      run: mvn -B verify checkstyle:checkstyle -DskipTests
     - uses: jwgmeligmeyling/checkstyle-github-action@master
       with:
         path: '**/checkstyle-result.xml'
-    - name: Build with Maven
-      run: mvn pmd:pmd -DskipTests
