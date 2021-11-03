@@ -1,0 +1,12 @@
+{
+  "name": "workflow",
+  "version": "0.1.0",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "8.7.1"
+  },
+  "scripts": {
+    "webpack--dev": "webpack --mode=development --config build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js"
+  }
+}

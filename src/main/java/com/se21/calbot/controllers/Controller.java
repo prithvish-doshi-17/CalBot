@@ -1,12 +1,12 @@
 package com.se21.calbot.controllers;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.se21.calbot.enums.Enums;
 import com.se21.calbot.factories.CalendarFactory;
 import com.se21.calbot.interfaces.Calendar;
-import com.se21.calbot.model.AuthToken;
 import com.se21.calbot.repositories.TokensRepository;
 import com.se21.calbot.security.AuthTokenAuthenticationFilter;
 import com.se21.calbot.security.AuthenticationService;
@@ -15,6 +15,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 
 /**
@@ -54,27 +57,93 @@ public class Controller {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray scheduledEventList = calObj.retrieveEvents("primary").getJSONArray("items");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
+        JSONArray eventsToSchedule = new JSONArray();
+        String eventsThisWeek = "Here are the events for this week:\n";
 
         //Filter events for this week
-
-
-        //Make a list of all events
-
-        //Prioritise all unscheduled events
-
-
-        //Send the list to client to display
-        String events = "";
-        for (int i = 0; i < scheduledEventList.length(); i++) {
-            org.json.JSONObject jsonLineItem = scheduledEventList.getJSONObject(i);
-            events += jsonLineItem.getString("summary") + "    " + jsonLineItem.getJSONObject("start").getString("dateTime") + "\n";
-        }
-        // Unscheduled events set in bot created aPAS calendar
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        float hours = 0.0F;
         for (int i = 0; i < unScheduledEventList.length(); i++) {
             org.json.JSONObject jsonLineItem = unScheduledEventList.getJSONObject(i);
-            events += jsonLineItem.getString("summary") + "    " + jsonLineItem.getJSONObject("start").getString("dateTime") + "\n";
+            java.time.LocalDateTime event_deadline;
+            event_deadline = LocalDateTime.parse(jsonLineItem.getJSONObject("end").getString("dateTime").substring(0, 19));
+            Duration difference = Duration.between(now, event_deadline);
+            int days = (int) difference.toDays();
+
+            if (days <= 7 && days >= 0) {
+                String[] eventProperties = jsonLineItem.getString("summary").split("#");
+                eventsToSchedule.put(jsonLineItem);
+                hours = hours + Float.parseFloat(eventProperties[1]);
+                eventsThisWeek += jsonLineItem.getString("summary") + "    Deadline:(" +
+                        jsonLineItem.getJSONObject("end").getString("dateTime") + ",TZ:" +
+                        jsonLineItem.getJSONObject("end").getString("timeZone") + ")\n";
+            }
         }
-        return events;
+
+        //Prioritise all unscheduled events
+        eventsThisWeek += "\nHere are the activities to do for today (and the number of hours to be dedicated):\n";
+        for (int i = 0; i < eventsToSchedule.length(); i++)
+        {
+            org.json.JSONObject jsonLineItem = eventsToSchedule.getJSONObject(i);
+            java.time.LocalDateTime event_deadline;
+            event_deadline = LocalDateTime.parse(jsonLineItem.getJSONObject("end").getString("dateTime").substring(0, 19));
+            Duration difference = Duration.between(now, event_deadline);
+            int days = (int) difference.toDays();
+            String[] eventProperties = jsonLineItem.getString("summary").split("#");
+            float numberOfHours = (float) Math.ceil(Float.parseFloat(eventProperties[1]) * 2 / days) / 2;
+            eventsThisWeek += eventProperties[0] + " (Number of hours: " + numberOfHours + ")\n";
+        }
+
+        return eventsThisWeek;
+    }
+
+    public String deleteEvent(String title) throws Exception {
+        calObj = calendarFactory.getCalendar("Google");
+        JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
+
+        for (int i = 0; i < unScheduledEventList.length(); i++) {
+            org.json.JSONObject jsonLineItem = unScheduledEventList.getJSONObject(i);
+            String[] eventProperties = jsonLineItem.getString("summary").split("#");
+            if (title.equals(eventProperties[0]))
+            {
+                calObj.deleteEvents(jsonLineItem.getString("id"));
+                return "Event deleted successfully!";
+            }
+        }
+        return "Please enter correct title for the event to be deleted";
+    }
+
+    public boolean eventExists(String title) throws Exception {
+        calObj = calendarFactory.getCalendar("Google");
+        JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
+
+        for (int i = 0; i < unScheduledEventList.length(); i++) {
+            org.json.JSONObject jsonLineItem = unScheduledEventList.getJSONObject(i);
+            String[] eventProperties = jsonLineItem.getString("summary").split("#");
+            if (title.equals(eventProperties[0]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String updateEvent(String title, String hours, String deadline) throws Exception {
+        calObj = calendarFactory.getCalendar("Google");
+        JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
+        System.out.println(unScheduledEventList);
+        for (int i = 0; i < unScheduledEventList.length(); i++) {
+            JSONObject jsonLineItem = unScheduledEventList.getJSONObject(i);
+            String[] eventProperties = jsonLineItem.getString("summary").split("#");
+            if (title.equals(eventProperties[0]))
+            {
+//                calObj.updateEvents();
+                calObj.deleteEvents(jsonLineItem.getString("id"));
+                calObj.addEvents(eventProperties[0], hours, deadline);
+                return "Event updated successfully!";
+            }
+        }
+        return "Please enter correct title for the event to be updated";
     }
 
     /**
@@ -94,9 +163,14 @@ public class Controller {
             case Add:
             {
                 try {
-                    //The format should be: title hoursNeeded deadline
-                    calObj.addEvents(msgParam[0], msgParam[1], msgParam[2]);
-                    return "done";
+                    if (eventExists(msgParam[0]))
+                        return "Event already exists on your calendar";
+                    else
+                    {
+                        //The format should be: title hoursNeeded deadline
+                        calObj.addEvents(msgParam[0], msgParam[1], msgParam[2]);//!Add title hoursNeeded deadline
+                        return "Event added to your calendar!";
+                    }
                 } catch (Exception e) {
                     //Throw exception if any part did not follow the format
                     System.out.println(e.getMessage());
@@ -106,9 +180,24 @@ public class Controller {
             }
 
             case Delete:
+            {
+                try {
+                    return this.deleteEvent(msgParam[0]);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    return "Please type in the format: !delete title";
+                }
+            }
             case Create:
             case Update:
-                break;
+            {
+                try {
+                    return this.updateEvent(msgParam[0], msgParam[1], msgParam[2]);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    return "Please type in the format: !update title hours";
+                }
+            }
             case Optimise:
             {
                 return this.arrangeEvents();
@@ -119,7 +208,7 @@ public class Controller {
                 try {
                     //  Scheduled events set in primary calendar
                     JSONArray itemArray = calObj.retrieveEvents("primary").getJSONArray("items");
-                    String events= "";
+                    String events= "Here are all the upcoming events on your calendar:\n";
                     for (int i = 0; i < itemArray.length(); i++) {
                         org.json.JSONObject jsonLineItem = itemArray.getJSONObject(i);
                         events += jsonLineItem.getString("summary") + "    " + jsonLineItem.getJSONObject("start").getString("dateTime") + "\n";

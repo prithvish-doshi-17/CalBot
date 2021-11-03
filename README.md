@@ -1,10 +1,11 @@
-[![example workflow](https://github.com/elric97/CalBot/actions/workflows/maven.yml/badge.svg)](https://github.com/elric97/CalBot/actions/workflows/maven.yml)
+[![Java CI with Maven](https://github.com/prithvish-doshi-17/CalBot/actions/workflows/maven.yml/badge.svg)](https://github.com/prithvish-doshi-17/CalBot/actions/workflows/maven.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5528822.svg)](https://doi.org/10.5281/zenodo.5528822)
 [![Made with](https://img.shields.io/badge/Made%20with-Java-blue)](https://www.java.com/en/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://github.com/elric97/CalBot/blob/master/LICENSE)
 [![Platform](https://img.shields.io/badge/platform-discord-blue)](https://discord.com/)
-[![GitHub issues open](https://img.shields.io/github/issues/elric97/CalBot)](https://github.com/elric97/CalBot/issues)
-[![GitHub issues closed](https://img.shields.io/github/issues-closed/elric97/CalBot?color=magenta)](https://github.com/elric97/CalBot/issues)
+[![GitHub issues open](https://img.shields.io/github/issues/prithvish-doshi-17/CalBot)](https://github.com/prithvish-doshi-17/CalBot/issues)
+[![GitHub issues closed](https://img.shields.io/github/issues-closed/prithvish-doshi-17/CalBot)](https://github.com/prithvish-doshi-17/CalBot/issues)
+<img src="./badges/jacoco.svg">
 # aPAS
 <p align = center>
   <a href="">
@@ -85,7 +86,7 @@ Discord4J
 * (Optional) To start project using docker run the following command in main directory
 ````
 docker build . -t 'image-name' //Don't forget the dot
-docker run -dp 8080:8080 'image-name' //This will start app on port on 8080
+docker run -dp 8090:8090 'image-name' //This will start app on port on 8090
 ````
 * [Developer Guide](https://elric97.github.io/CalBot/) 
 

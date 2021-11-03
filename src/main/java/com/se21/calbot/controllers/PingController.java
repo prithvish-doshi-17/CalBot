@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * You can use it to check if your application is up or not
- * try http://localhost:8080/ping 
+ * try http://localhost:8090/ping
  */
 @RestController
 @CrossOrigin(origins="*")

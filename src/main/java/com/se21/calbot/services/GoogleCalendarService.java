@@ -2,6 +2,7 @@ package com.se21.calbot.services;
 
 import static com.se21.calbot.enums.Enums.calApiResponse.Success;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -9,9 +10,7 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -77,7 +76,7 @@ public class GoogleCalendarService implements Calendar {
                     .setAccessType("offline")
                     .build();
 
-            return flow.newAuthorizationUrl().setRedirectUri("http://localhost:8080/test").setState(discordId).build();
+            return flow.newAuthorizationUrl().setRedirectUri("http://localhost:8090/test").setState(discordId).build();
         } catch (Exception e) {
             log.severe("Google auth URL exception - " + e.getMessage());
         }
@@ -93,7 +92,7 @@ public class GoogleCalendarService implements Calendar {
 
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             TokenResponse response = new GoogleAuthorizationCodeTokenRequest(HTTP_TRANSPORT, JSON_FACTORY, clientId,
-                    clientSecret, authCode, "http://localhost:8080/test")
+                    clientSecret, authCode, "http://localhost:8090/test")
                     .setGrantType("authorization_code").execute();
 
             if(response == null || response.getAccessToken() == null
@@ -146,10 +145,33 @@ public class GoogleCalendarService implements Calendar {
     }
 
     @Override
-    public Enums.calApiResponse updateEvents(JSONObject req) {
+    public Enums.calApiResponse updateEvents(org.json.JSONObject req) {
         return null;
     }
 
+    public Enums.calApiResponse updateEvents(String eventId, String title, String hours){
+        String url = "https://www.googleapis.com/calendar/v3/calendars/"+authenticationService.getCalId() + "/events/" + eventId;
+        HttpPost request = new HttpPost(url);
+        request.setHeader("Authorization", "Bearer "+authenticationService.getToken());
+        request.setHeader("Content-Type", "application/json");
+        StringEntity body = null;
+        try {
+            body = new StringEntity(this.createAddEventBody(title +"#"+ hours).toString());
+            System.out.println(body);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        body.setContentType("application/json");
+        request.setEntity(body);
+        System.out.println(request);
+        try {
+            httpClient.execute(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Success;
+    }
     public JSONObject createAddEventBody(DateTime startDt, DateTime endDt, String title)
     {
         JSONObject jsonEnd = new JSONObject();
@@ -161,6 +183,13 @@ public class GoogleCalendarService implements Calendar {
 
         jsonStart.put("dateTime", startDt.toString());
         jsonBody.put("start", jsonStart);
+        jsonBody.put("summary", title);
+        return jsonBody;
+    }
+
+    public JSONObject createAddEventBody(String title)
+    {
+        JSONObject jsonBody = new JSONObject();
         jsonBody.put("summary", title);
         return jsonBody;
     }
@@ -209,6 +238,20 @@ public class GoogleCalendarService implements Calendar {
     @Override
     public Enums.calApiResponse deleteEvents() {
         return null;
+    }
+
+
+    public Enums.calApiResponse deleteEvents(String eventId) {
+        String url = "https://www.googleapis.com/calendar/v3/calendars/"+authenticationService.getCalId() + "/events/" + eventId;
+        HttpDelete request = new HttpDelete(url);
+        request.setHeader("Authorization", "Bearer "+authenticationService.getToken());
+        request.setHeader("Content-Type", "application/json");
+        try {
+            httpClient.execute(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Success;
     }
 
     @Override
