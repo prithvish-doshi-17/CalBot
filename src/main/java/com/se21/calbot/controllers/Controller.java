@@ -70,7 +70,7 @@ public class Controller {
             Duration difference = Duration.between(now, event_deadline);
             int days = (int) difference.toDays();
 
-            if (days <= 7) {
+            if (days <= 7 && days >= 0) {
                 String[] eventProperties = jsonLineItem.getString("summary").split("#");
                 eventsToSchedule.put(jsonLineItem);
                 hours = hours + Float.parseFloat(eventProperties[1]);
