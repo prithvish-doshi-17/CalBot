@@ -102,7 +102,11 @@ public class Controller {
 
         return eventsThisWeek;
     }
-
+    
+    /**
+    * This function deletes the event mentioned by the user
+    * As the bot does not allow duplicate events to be created, name of the event works as a unique identifier for this operation
+    */
     public String deleteEvent(String title) throws Exception {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
@@ -137,13 +141,11 @@ public class Controller {
     public String updateEvent(String title, String hours, String deadline) throws Exception {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
-        System.out.println(unScheduledEventList);
         for (int i = 0; i < unScheduledEventList.length(); i++) {
             JSONObject jsonLineItem = unScheduledEventList.getJSONObject(i);
             String[] eventProperties = jsonLineItem.getString("summary").split("#");
             if (title.equals(eventProperties[0]))
             {
-//                calObj.updateEvents();
                 calObj.deleteEvents(jsonLineItem.getString("id"));
                 calObj.addEvents(eventProperties[0], hours, deadline);
                 return "Event updated successfully!";
