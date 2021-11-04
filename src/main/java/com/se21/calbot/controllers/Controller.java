@@ -122,7 +122,11 @@ public class Controller {
         }
         return "Please enter correct title for the event to be deleted";
     }
-
+    
+    /**
+    * This function is a helper function to check if an event of a given name already exists or not
+    * It is used as a checker before creating any new event
+    */
     public boolean eventExists(String title) throws Exception {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
@@ -137,7 +141,11 @@ public class Controller {
         }
         return false;
     }
-
+    
+    /**
+    * This function updates an existing event with updated number of hours and updated deadline
+    * It has an inbuilt checker, so that it returns a message if the user tries to update a non-existent event
+    */
     public String updateEvent(String title, String hours, String deadline) throws Exception {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
