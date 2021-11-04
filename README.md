@@ -98,10 +98,6 @@ docker run -dp 8080:8080 'image-name' //This will start app on port on 8080
 There are multiple dimensions to this project catering to the interests of
 Various developers. Please check [CONTRIBUTING.md](./CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for contributing rules
 
-### Finish the pending work
-* Implement the [Algorithm](https://github.com/elric97/CalBot/wiki/Algorithm-to-compute-tasks-for-each-day) in class [Controller](https://github.com/elric97/CalBot/blob/master/src/main/java/com/se21/calbot/controllers/Controller.java)(function: [arrangeEvents](https://github.com/elric97/CalBot/blob/master/src/main/java/com/se21/calbot/controllers/Controller.java#:~:text=to%20JSON%20objects-,public%20String%20arrangeEvents()%20throws%20Exception%20%7B,%7D,-/**)).
-* Add more CRUD operations to give more flexibility to user to delete and edit events via chatbot.
-
 
 ### If you are a front-end developer 💻
 Currently aPAS has been configured to work with Discord as the GUI but given the structure of the project it can be easily extended for other platforms such as
