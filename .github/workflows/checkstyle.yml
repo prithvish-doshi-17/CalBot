@@ -29,12 +29,12 @@ jobs:
         cache: maven
     - name: Run style checker
       run: mvn -B verify checkstyle:checkstyle -DskipTests
-    - name: Run pmd analysis
-      run: mvn pmd:pmd -DskipTests
     - name: create style report
       uses: jwgmeligmeyling/checkstyle-github-action@master
       with:
         path: '**/checkstyle-result.xml'
+    - name: Run pmd analysis
+      run: mvn pmd:pmd -DskipTests
     - name: create pmd report
       uses: jwgmeligmeyling/pmd-github-action@master
       with:
