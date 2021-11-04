@@ -114,9 +114,11 @@ Extending aPAS for these will require addition of service classes for these cale
 * Why not use a voice-bot to set and manage events,Implementing this using an audio model can be an interesting extension to the project.
 * The priority algorithm can be personalized for a user based on the amount of time they spend on a particular task. 
 
-## Team Members
-* Aditi Bhagwat
-* Anumit Garg
-* Palvit Garg
-* Rachit Sharma
-* Shree Ramasubramanian
+## Updates from previous version
+* Completed algorithm implementation for scheduling events
+* Added functionality to delete an event
+* Added functionality to update an existing event with new number of hours and/or new deadline
+* Added functionality to stop users from creating multiple events of the same name
+* Implementation of token authentication
+* Added code coverage tools and testing support
+* Added unit tests to files and made them routinely execute on each push to master branch
