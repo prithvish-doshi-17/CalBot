@@ -122,3 +122,10 @@ Extending aPAS for these will require addition of service classes for these cale
 * Implementation of token authentication
 * Added code coverage tools and testing support
 * Added unit tests to files and made them routinely execute on each push to master branch
+
+## Team Members
+* Chao-Ting Hung
+* Prithvish Doshi
+* Seeya Prabhumoni
+* Shao-Yo Chao
+* Vraj Chokshi
