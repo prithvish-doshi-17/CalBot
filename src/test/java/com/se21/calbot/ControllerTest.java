@@ -3,6 +3,7 @@ package com.se21.calbot;
 import com.se21.calbot.controllers.Controller;
 import com.se21.calbot.enums.Enums;
 import com.se21.calbot.factories.CalendarFactory;
+import com.se21.calbot.interfaces.Calendar;
 import com.se21.calbot.model.AuthToken;
 import com.se21.calbot.repositories.TokensRepository;
 import com.se21.calbot.security.AuthTokenAuthenticationFilter;
@@ -162,8 +163,12 @@ public class ControllerTest {
     @Test
     public void dataOperationAddShouldReturnDone() throws Exception {
         // mock a return result of googleCalendarService
+        authTokenAuthenticationFilter.doFilter(existId);
         doReturn(Enums.calApiResponse.Success).when(googleCalendarService).addEvents(anyString(), anyString(), anyString());
-        assertTrue(mockController.dataOperation(Enums.operationType.Add, "title", "hours", "deadline").equals("done"));
+        doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
+        String actual = mockController.dataOperation(Enums.operationType.Add, "title", "1", now.toString());
+        String expect = "Event added to your calendar!";
+        assertEquals(expect, actual);
     }
 
     /**
@@ -184,19 +189,6 @@ public class ControllerTest {
      * <p>
      * Test target: {@link com.se21.calbot.controllers.Controller#dataOperation(Enums.operationType, String...) dataOperation(Enums.operationType, String...))}
      * </p>
-     * When operating Enums.operationType.Delete, Create, Update, return "failure"
-     */
-    @Test
-    public void dataOperationShouldReturnFailure() throws Exception {
-        assertTrue(mockController.dataOperation(Enums.operationType.Delete, "title", "hours", "deadline").equals("Failure!"));
-        assertTrue(mockController.dataOperation(Enums.operationType.Create, "title", "hours", "deadline").equals("Failure!"));
-        assertTrue(mockController.dataOperation(Enums.operationType.Update, "title", "hours", "deadline").equals("Failure!"));
-    }
-
-    /**
-     * <p>
-     * Test target: {@link com.se21.calbot.controllers.Controller#dataOperation(Enums.operationType, String...) dataOperation(Enums.operationType, String...))}
-     * </p>
      * When operating Enums.operationType.Retrieve, return events String from google API
      */
     @Test
@@ -205,11 +197,12 @@ public class ControllerTest {
         authTokenAuthenticationFilter.doFilter(existId);
         // mock the return result of googleCalendarService
         doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
-
-        assertTrue(mockController.dataOperation(Enums.operationType.Retrieve).equals(
-                "test1    2021/1/1\n" +
-                        "test2    2021/1/1\n" +
-                        "test1    2021/1/1\n" +
-                        "test2    2021/1/1\n"));
+        String actual = mockController.dataOperation(Enums.operationType.Retrieve);
+        String expect = "Here are all the upcoming events on your calendar:\n" +
+                "#1    " + now.toString() + "\n" +
+                "#2    " + now.toString() + "\n" +
+                "#1    " + now.toString() + "\n" +
+                "#2    " + now.toString() + "\n";
+        assertEquals(expect, actual);
     }
 }

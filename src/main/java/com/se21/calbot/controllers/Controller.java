@@ -163,17 +163,16 @@ public class Controller {
             case Add:
             {
                 try {
-                    if (eventExists(msgParam[0]))
+                    if (eventExists(msgParam[0])) {
                         return "Event already exists on your calendar";
-                    else
-                    {
+                    } else {
                         //The format should be: title hoursNeeded deadline
                         calObj.addEvents(msgParam[0], msgParam[1], msgParam[2]);//!Add title hoursNeeded deadline
                         return "Event added to your calendar!";
                     }
                 } catch (Exception e) {
                     //Throw exception if any part did not follow the format
-                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                     return "Please type in the format: !add title hours mm/dd/yyyy";
                 }
 
@@ -188,7 +187,7 @@ public class Controller {
                     return "Please type in the format: !delete title";
                 }
             }
-            case Create:
+            case Create: {}
             case Update:
             {
                 try {
