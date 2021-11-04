@@ -94,17 +94,39 @@ public class DiscordTest {
      * 	Test target: {@link com.se21.calbot.ClientManager.Discord#processInput(String, String) processInput(String, String)}
      * </p>
      * When a user send a add command to DiscordBot with correct following,
-     * the robot sends string "done" back.
+     * the robot sends string "Event added to your calendar!" back.
      */
     @Test
     void processInputAddCorrectly() {
         String ID = "test";
         String correctAddMsg = "!add SEclass 1 12/10/2021\n";
 
-        // actual return data
-        String actual = discord.processInput(ID, correctAddMsg);
+        doReturn("Event added to your calendar!").when(mockDiscord).processInput(ID, correctAddMsg);
+        // mock actual return data
+        String actual = mockDiscord.processInput(ID, correctAddMsg);
         // create an expect result
-        String expect = "done";
+        String expect = "Event added to your calendar!";
+        // check if correct
+        assertEquals(expect, actual);
+    }
+
+    /**
+     * <p>
+     * 	Test target: {@link com.se21.calbot.ClientManager.Discord#processInput(String, String) processInput(String, String)}
+     * </p>
+     * When a user send a add command to DiscordBot with duplicate name,
+     * the robot sends string "Event already exists on your calendar" back.
+     */
+    @Test
+    void processInputAddWithDuplicateName() {
+        String ID = "test";
+        String correctAddMsg = "!add SEclass 1 12/10/2021\n";
+
+        doReturn("Event already exists on your calendar").when(mockDiscord).processInput(ID, correctAddMsg);
+        // mock actual return data
+        String actual = mockDiscord.processInput(ID, correctAddMsg);
+        // create an expect result
+        String expect = "Event already exists on your calendar";
         // check if correct
         assertEquals(expect, actual);
     }
@@ -195,6 +217,94 @@ public class DiscordTest {
         String actual = mockDiscord.processInput(ID, showMsg);
         // create an expect result
         String expect = "SEclass 1 12/10/2021";
+
+        // check if correct
+        assertEquals(expect, actual);
+    }
+
+    /**
+     * <p>
+     * 	Test target: {@link com.se21.calbot.ClientManager.Discord#processInput(String, String) processInput(String, String)}
+     * </p>
+     * When a user send a update command to DiscordBot with correct input,
+     * the robot sends events back.
+     */
+    @Test
+    void processInputUpdateWithCorrectInput() {
+        String ID = "test";
+        String updateMsg = "!update\n";
+
+        doReturn("SEclass 2 12/10/2021").when(mockDiscord).processInput(ID, updateMsg);
+
+        // mocked actual return data
+        String actual = mockDiscord.processInput(ID, updateMsg);
+        // create an expect result
+        String expect = "SEclass 2 12/10/2021";
+
+        // check if correct
+        assertEquals(expect, actual);
+    }
+
+    /**
+     * <p>
+     * 	Test target: {@link com.se21.calbot.ClientManager.Discord#processInput(String, String) processInput(String, String)}
+     * </p>
+     * When a user send a update command to DiscordBot with wrong input,
+     * the robot sends events "Please type in the format: !update title new_hours new_deadline" back.
+     */
+    @Test
+    void processInputUpdateWithIllegalInput() {
+        String ID = "test";
+        String updateMsg = "!update\n";
+        // actual return data
+        String actual = discord.processInput(ID, updateMsg);
+        // create an expect result
+        String expect = "Please type in the format: !update title new_hours new_deadline";
+
+        // check if correct
+        assertEquals(expect, actual);
+    }
+
+
+    /**
+     * <p>
+     * 	Test target: {@link com.se21.calbot.ClientManager.Discord#processInput(String, String) processInput(String, String)}
+     * </p>
+     * When a user send a delete command to DiscordBot with correct input,
+     * the robot sends events back.
+     */
+    @Test
+    void processInputDeleteWithCorrectInput() {
+        String ID = "test";
+        String deleteMsg = "!delete\n";
+
+        doReturn("SEclass 2 12/10/2021").when(mockDiscord).processInput(ID, deleteMsg);
+
+        // mocked actual return data
+        String actual = mockDiscord.processInput(ID, deleteMsg);
+        // create an expect result
+        String expect = "SEclass 2 12/10/2021";
+
+        // check if correct
+        assertEquals(expect, actual);
+    }
+
+    /**
+     * <p>
+     * 	Test target: {@link com.se21.calbot.ClientManager.Discord#processInput(String, String) processInput(String, String)}
+     * </p>
+     * When a user send a delete command to DiscordBot with wrong input,
+     * the robot sends "Please type in the format: !delete title" back.
+     */
+    @Test
+    void processInputDeleteWithIllegalInput() {
+        String ID = "test";
+        String updateMsg = "!delete\n";
+
+        //actual return data
+        String actual = discord.processInput(ID, updateMsg);
+        // create an expect result
+        String expect = "Please type in the format: !delete title";
 
         // check if correct
         assertEquals(expect, actual);
