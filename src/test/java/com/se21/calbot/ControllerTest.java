@@ -26,8 +26,7 @@ import java.time.LocalDateTime;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 
 /**
  * The tests for {@link com.se21.calbot.controllers.Controller Controller.java}
@@ -51,8 +50,8 @@ public class ControllerTest {
     @Mock
     CalendarFactory calendarFactory;
     private final String calenderApiMockReturn = "{" +
-            "items:[{summary: '#1', start:{dateTime:'" + now.toString() + "'}, end:{dateTime:'" + now.toString() + "', timeZone: 'UTF+0'}}, " +
-            "{summary: '#2', start:{dateTime:'" + now.toString() + "'},end:{ dateTime:'" + now.toString() + "', timeZone: 'UTF+0'}}]}";
+            "items:[{id: 1, summary: '1#1', start:{dateTime:'" + now.toString() + "'}, end:{dateTime:'" + now.toString() + "', timeZone: 'UTF+0'}}, " +
+            "{id: 2, summary: '2#2', start:{dateTime:'" + now.toString() + "'},end:{ dateTime:'" + now.toString() + "', timeZone: 'UTF+0'}}]}";
     @InjectMocks
     Controller mockController;
 
@@ -118,14 +117,13 @@ public class ControllerTest {
         authTokenAuthenticationFilter.doFilter(existId);
         // mock the return result of googleCalendarService
         doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
-        assertTrue(mockController.arrangeEvents().equals(
-                "Here are the events for this week:\n" +
-                        "#1    Deadline:("+now.toString()+",TZ:UTF+0)\n" +
-                        "#2    Deadline:("+now.toString()+",TZ:UTF+0)\n" +
-                        "\n" +
-                        "Here are the activities to do for today (and the number of hours to be dedicated):\n" +
-                        " (Number of hours: 1.0)\n" +
-                        " (Number of hours: 2.0)\n"));
+        assertEquals("Here are the events for this week:\n" +
+                "1#1    Deadline:(" + now.toString() + ",TZ:UTF+0)\n" +
+                "2#2    Deadline:(" + now.toString() + ",TZ:UTF+0)\n" +
+                "\n" +
+                "Here are the activities to do for today (and the number of hours to be dedicated):\n" +
+                "1 (Number of hours: 1.0)\n" +
+                "2 (Number of hours: 2.0)\n", mockController.arrangeEvents());
     }
 
     /**
@@ -167,7 +165,7 @@ public class ControllerTest {
         doReturn(Enums.calApiResponse.Success).when(googleCalendarService).addEvents(anyString(), anyString(), anyString());
         doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
         // create an actual and expect result
-        String actual = mockController.dataOperation(Enums.operationType.Add, "title", "1", now.toString());
+        String actual = mockController.dataOperation(Enums.operationType.Add, "3", "3", now.toString());
         String expect = "Event added to your calendar!";
         assertEquals(expect, actual);
     }
@@ -182,8 +180,8 @@ public class ControllerTest {
     public void dataOperationAddShouldReturnErrorMsg() throws Exception {
         // mock a return result of googleCalendarService
         doThrow(new Exception()).when(googleCalendarService).addEvents(anyString(), anyString(), anyString());
-        assertEquals(mockController.dataOperation(Enums.operationType.Add, "title", "hours", "deadline")
-                , "Please type in the format: !add title hours mm/dd/yyyy");
+        assertEquals("Please type in the format: !add title hours mm/dd/yyyy",
+                mockController.dataOperation(Enums.operationType.Add, "title", "hours", "deadline"));
     }
 
     /**
@@ -201,10 +199,102 @@ public class ControllerTest {
         // create an actual and expect result
         String actual = mockController.dataOperation(Enums.operationType.Retrieve);
         String expect = "Here are all the upcoming events on your calendar:\n" +
-                "#1    " + now.toString() + "\n" +
-                "#2    " + now.toString() + "\n" +
-                "#1    " + now.toString() + "\n" +
-                "#2    " + now.toString() + "\n";
+                "1#1    " + now.toString() + "\n" +
+                "2#2    " + now.toString() + "\n" +
+                "1#1    " + now.toString() + "\n" +
+                "2#2    " + now.toString() + "\n";
         assertEquals(expect, actual);
+    }
+
+    /**
+     * <p>
+     * Test target: {@link com.se21.calbot.controllers.Controller#dataOperation(Enums.operationType, String...) dataOperation(Enums.operationType, String...))}
+     * </p>
+     * If any title of activities in the calender is the same as parameter,
+     * delete it and return successful message
+     */
+    @Test
+    public void dataOperationDeleteShouldSucceed() throws Exception {
+        // init the Spring Security Token
+        authTokenAuthenticationFilter.doFilter(existId);
+        doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
+        assertEquals("Event deleted successfully!",
+                mockController.dataOperation(Enums.operationType.Delete, "1"));
+    }
+
+    /**
+     * <p>
+     * Test target: {@link com.se21.calbot.controllers.Controller#dataOperation(Enums.operationType, String...) dataOperation(Enums.operationType, String...))}
+     * </p>
+     * If the title doesn't exist in the calender, return failure message
+     */
+    @Test
+    public void dataOperationDeleteShouldReturnTitleNotCorrectMsg() throws Exception {
+        // init the Spring Security Token
+        authTokenAuthenticationFilter.doFilter(existId);
+        doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
+        assertEquals("Please enter correct title for the event to be deleted",
+                mockController.dataOperation(Enums.operationType.Delete, "0"));
+    }
+
+    /**
+     * <p>
+     * Test target: {@link com.se21.calbot.controllers.Controller#dataOperation(Enums.operationType, String...) dataOperation(Enums.operationType, String...))}
+     * </p>
+     * If the title doesn't exist in the calender, return failure message
+     */
+    @Test
+    public void dataOperationDeleteShouldReturnCommandErrorMsg() throws Exception {
+        // init the Spring Security Token
+        authTokenAuthenticationFilter.doFilter(existId);
+        doThrow(new Exception()).when(googleCalendarService).retrieveEvents(anyString());
+        assertEquals("Please type in the format: !delete title",
+                mockController.dataOperation(Enums.operationType.Delete, "0"));
+    }
+
+    /**
+     * <p>
+     * Test target: {@link com.se21.calbot.controllers.Controller#dataOperation(Enums.operationType, String...) dataOperation(Enums.operationType, String...))}
+     * </p>
+     * If any title of activities in the calender is the same as parameter, update this activity and
+     * return successful message
+     */
+    @Test
+    public void dataOperationUpdateShouldReturnSuccessfulMsg() throws Exception {
+        // init the Spring Security Token
+        authTokenAuthenticationFilter.doFilter(existId);
+        doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
+        assertEquals("Event updated successfully!",
+                mockController.dataOperation(Enums.operationType.Update, "1", "2", now.toString()));
+    }
+
+    /**
+     * <p>
+     * Test target: {@link com.se21.calbot.controllers.Controller#dataOperation(Enums.operationType, String...) dataOperation(Enums.operationType, String...))}
+     * </p>
+     * If the title doesn't exist in the calender, delete it and return failure message
+     */
+    @Test
+    public void dataOperationUpdateShouldReturnTitleNotCorrectMsg() throws Exception {
+        // init the Spring Security Token
+        authTokenAuthenticationFilter.doFilter(existId);
+        doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
+        assertEquals("Please enter correct title for the event to be updated",
+                mockController.dataOperation(Enums.operationType.Update, "0", "2", now.toString()));
+    }
+
+    /**
+     * <p>
+     * Test target: {@link com.se21.calbot.controllers.Controller#dataOperation(Enums.operationType, String...) dataOperation(Enums.operationType, String...))}
+     * </p>
+     * If the title doesn't exist in the calender, delete it and return failure message
+     */
+    @Test
+    public void dataOperationUpdateShouldReturnCommandErrorMsg() throws Exception {
+        // init the Spring Security Token
+        authTokenAuthenticationFilter.doFilter(existId);
+        doThrow(new Exception()).when(googleCalendarService).retrieveEvents(anyString());
+        assertEquals("Please type in the format: !update title hours",
+                mockController.dataOperation(Enums.operationType.Update, "0", "2", now.toString()));
     }
 }
