@@ -112,7 +112,11 @@ Extending aPAS for these will require addition of service classes for these cale
 
 ### If you are an ML Enthusiast 🧑‍🔬
 * Why not use a voice-bot to set and manage events,Implementing this using an audio model can be an interesting extension to the project.
-* The priority algorithm can be personalized for a user based on the amount of time they spend on a particular task. 
+* The priority algorithm can be personalized for a user based on the amount of time they spend on a particular task.
+
+### If you want to have a hang of DevOps
+* Configure deployment on Heroku
+* Add more code analysis tools like SonarQube, etc
 
 ## Updates from previous version
 * Completed algorithm implementation for scheduling events
