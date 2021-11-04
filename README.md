@@ -43,7 +43,7 @@ https://user-images.githubusercontent.com/55187770/135385469-924f4ded-4768-4bac-
 * **!add <!title> <!hours needed> <!deadline mm/dd/yyyy>** - To add events to your calendar
 * **!show** - To show events in the upcoming week and display time needed to be dedicated to each event today
 * **!update <!title> <!new hours needed> <!new deadline mm/dd/yyyy>** - To update an already existing event with new number of hours and/or new deadline
-* **!delete <!title>** - To delete an event from your calendar
+* **!delete <!title>** - To delete an event from your calendar 
 
 ## Technologies
 <p>
@@ -92,6 +92,10 @@ docker build . -t 'image-name' //Don't forget the dot
 docker run -dp 8080:8080 'image-name' //This will start app on port on 8080
 ````
 * [Developer Guide](https://elric97.github.io/CalBot/) 
+
+#### Here's a demo video showing how to initialize the bot and the usage of all commands
+https://user-images.githubusercontent.com/43064854/140317989-1e683eda-211d-4806-8e72-e88097eb6aa1.mp4
+
 
 ## Future Scope 🐾
 There are multiple dimensions to this project catering to the interests of
