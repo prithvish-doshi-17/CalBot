@@ -74,7 +74,6 @@ Docker\
 Maven\
 Discord4J
 
-## Commands
 
 
 ## Getting started
