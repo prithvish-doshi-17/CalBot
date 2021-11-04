@@ -124,12 +124,13 @@ Extending aPAS for these will require addition of service classes for these cale
 
 ## Updates from previous version
 * Completed algorithm implementation for scheduling events
-* Added functionality to delete an event
-* Added functionality to update an existing event with new number of hours and/or new deadline
+* Added functionality to delete an event and update an existing event with new number of hours and/or new deadline
 * Added functionality to stop users from creating multiple events of the same name
 * Implementation of token authentication
 * Added code coverage tools and testing support
 * Added unit tests to files and made them routinely execute on each push to master branch
+* Used code formatters and style checkers for the repository
+* Code coverage and automated analysis tools used to improve the quality of the repository
 
 ## Team Members
 * Chao-Ting Hung
