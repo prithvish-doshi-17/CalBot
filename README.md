@@ -40,8 +40,10 @@ https://user-images.githubusercontent.com/55187770/135385469-924f4ded-4768-4bac-
 ## Commands
 * **!oauth** - To get the authentication link for calendar
 * **!event** - To display a list of upcoming events on your calendar
-* **!add <!one word title> <!deadline mm/dd/yyyy> <!hours needed>** - To add events to your calendar
-* **!show**(still in development) - To arrange events in an optimised way according to the algo discussed in wiki
+* **!add <!title> <!hours needed> <!deadline mm/dd/yyyy>** - To add events to your calendar
+* **!show** - To show events in the upcoming week and display time needed to be dedicated to each event today
+* **!update <!title> <!new hours needed> <!new deadline mm/dd/yyyy>** - To update an already existing event with new number of hours and/or new deadline
+* **!delete <!title>** - To delete an event from your calendar
 
 ## Technologies
 <p>
