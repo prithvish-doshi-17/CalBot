@@ -6,6 +6,7 @@
 [![GitHub issues open](https://img.shields.io/github/issues/prithvish-doshi-17/CalBot)](https://github.com/prithvish-doshi-17/CalBot/issues)
 [![GitHub issues closed](https://img.shields.io/github/issues-closed/prithvish-doshi-17/CalBot)](https://github.com/prithvish-doshi-17/CalBot/issues)
 <img src="./badges/jacoco.svg">
+[![Check Style](https://github.com/prithvish-doshi-17/CalBot/actions/workflows/checkstyle.yml/badge.svg)](https://github.com/prithvish-doshi-17/CalBot/actions/workflows/checkstyle.yml)
 # aPAS
 <p align = center>
   <a href="">
