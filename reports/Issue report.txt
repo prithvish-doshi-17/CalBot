@@ -2,17 +2,17 @@ Issues Report summary:-
 
 1) Code Coverage:- It was the major issue we were facing as lot of test cases were failing. So we use jacoco in pom.xml to generate the code coverage analysis and badge. The issues and its solutions were discussed efore closing it.
 
-2) !show command:- The show command was not implemented by the previous group (can be seen in there readme). So we discussed its logic for implementation and completed the functions of this command and closed the issue.
+2) !show command:- The show command was not implemented by the previous group (it just showed the output similar to !event command - can be seen in their README). So we discussed its logic for implementation and completed the functions of this command and closed the issue.
 
 3) Stop user for creating duplicate events:- The earlier system was having a bug which allowed the user to create duplicate events. So we implemented the logic to eliminate this bug and closed the issue after solving it. 
 
 4) Delete function:- Previuosly delete command was giving null result. So we discussed its implementations and closed the issue after correctly implementing the command. So now we can delete the event using this function.
 
-5) ! event command:- Previuosly there was a bug with this command which fetches the past events. So we corrected it and hence it will now handle only future events.
+5) !event command:- Previuosly there was a bug with this command which fetches the past events. So we corrected it and hence it will now handle only future events.
 
-6) Testing Support:- Earlier the testing support was close to null. So we added style checkers, syntax checkers and other analysis tools and also use them to imprive the quality of our code.
+6) Testing Support:- Earlier the testing support was close to null. So we added style checkers, syntax checkers and other analysis tools and also use them to improve the quality of our code.
 
-7) Update Function currently return null:- The update function has been updated successfully to return the correct output as per the needs. We all have discuss its implementations and closed the issue after been resolved.
+7) Update Function:- The update function has been updated successfully to return the correct output as per the needs. We all have discuss its implementations and closed the issue after been resolved.
 
 8)Routine execution of test cases:- Instead of using travis-ci, we use Github actions to complete the automated testing.
 
