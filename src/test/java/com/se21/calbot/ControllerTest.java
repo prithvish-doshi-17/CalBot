@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.sound.midi.SysexMessage;
 import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
@@ -49,8 +50,8 @@ public class ControllerTest {
     @Mock
     CalendarFactory calendarFactory;
     private final String calenderApiMockReturn = "{" +
-            "items:[{summary: 'test1', start:{dateTime:'2021/1/1'}}, " +
-            "{summary: 'test2', start:{ dateTime:'2021/1/1'}}]}";
+            "items:[{summary: 'test1', start:{dateTime:'" + now.toString() + "'}, end:{dateTime:'" + now.toString() + "'}}, " +
+            "{summary: 'test2', start:{dateTime:'" + now.toString() + "'},end:{ dateTime:'" + now.toString() + "'}}]}";
     @InjectMocks
     Controller mockController;
 
@@ -59,6 +60,7 @@ public class ControllerTest {
 
     private static final String existId = "test";
     private static final String nonExistId = "test1";
+    private static final LocalDateTime now = LocalDateTime.now();
 
     @BeforeEach
     void init() {
@@ -115,12 +117,12 @@ public class ControllerTest {
         authTokenAuthenticationFilter.doFilter(existId);
         // mock the return result of googleCalendarService
         doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
-
+        System.out.println(mockController.arrangeEvents());
         assertTrue(mockController.arrangeEvents().equals(
-                "test1    2021/1/1\n" +
-                        "test2    2021/1/1\n" +
-                        "test1    2021/1/1\n" +
-                        "test2    2021/1/1\n"));
+                "test1    "+now.toString()+"\n" +
+                        "test2    "+now.toString()+"\n" +
+                        "test1    "+now.toString()+"\n" +
+                        "test2    "+now.toString()+"\n"));
     }
 
     /**
@@ -204,8 +206,8 @@ public class ControllerTest {
 
         assertTrue(mockController.dataOperation(Enums.operationType.Retrieve).equals(
                 "test1    2021/1/1\n" +
-                "test2    2021/1/1\n" +
-                "test1    2021/1/1\n" +
-                "test2    2021/1/1\n"));
+                        "test2    2021/1/1\n" +
+                        "test1    2021/1/1\n" +
+                        "test2    2021/1/1\n"));
     }
 }
