@@ -83,3 +83,33 @@ authenticate the user token and put into SecurityContextHolder.
 
 Added plugin jacoco for code coverage. 
 Added pmd, checkstyle, code formatter , syntax checkers plugins in pom.xml file.
+## ControllerTest.java
+
+initTokenShouldCreateTokenSuccessfully() Function:
+
+When the function gets the id existing in the database, SecurityContextHolder will content an Authentication.
+##
+arrangeEvents() Function:
+
+ When users pass a invalid code and state, the function should return a failure message
+     In order not to test Google API, use the mock controller so that we can customize the return value of
+      Google APIs.
+##
+getUrlShouldReturnOAuth2Link() Function:
+
+When the calType is valid, return the OAuth2 link.
+
+##
+dataOperationAddShouldbeDone() Function:
+
+When operating Enums.operationType.Add with correct parameters, return "Event added to your calendar!
+
+##
+dataOperationAddShouldReturnErrorMsg() Function:
+
+After GoogleCalendarService throws exception, dataOperation will return error message.
+##
+
+dataOperationShouldReturnEventsString() Function:
+
+When operating Enums.operationType.Retrieve, return events String from google API.
