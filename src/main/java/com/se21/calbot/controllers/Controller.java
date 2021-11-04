@@ -176,6 +176,10 @@ public class Controller {
         switch(opType)
         {
 
+            /*
+              This case first checks if an event already exists by the given name. If yes, it returns a message
+              Else, it calls the function to create a new event on the user's calendar
+             */
             case Add:
             {
                 try {
@@ -195,6 +199,9 @@ public class Controller {
 
             }
 
+            /*
+              This case calls the function to delete a particular event from the user's calendar
+             */
             case Delete:
             {
                 try {
@@ -205,6 +212,10 @@ public class Controller {
                 }
             }
             case Create:
+
+            /*
+              This case calls the function to update a particular event in the user's calendar
+             */
             case Update:
             {
                 try {
@@ -214,11 +225,18 @@ public class Controller {
                     return "Please type in the format: !update title hours";
                 }
             }
+
+            /*
+              This case gives the output of the scheduler algorithm based on number of hours, deadline, etc.
+             */
             case Optimise:
             {
                 return this.arrangeEvents();
             }
 
+            /*
+              This case retrieves all the events present in the user's calendar
+             */
             case Retrieve:
             {
                 try {
