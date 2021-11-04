@@ -8,7 +8,7 @@
 |.5|Docs: doco generated , format not ugly  | |
 |.5|evidence that the whole team is using the same tools (e.g. config files in the repo, updated by lots of different people) | |
 |.5|evidence that the members of the team are working across multiple places in the code base |Worked across development of new features, testing, documentation, solving earlier issues at different places in the codebase |
-|1|Docs: what: point descriptions of each class/function (in isolation)  |[Document]() with descriptions added|
+|1|Docs: what: point descriptions of each class/function (in isolation)  |[Document](https://github.com/prithvish-doshi-17/CalBot/blob/master/docs/Function%20Description.md) with descriptions added|
 |.5|Number of commits: by different people  ||
 |1|issues are being closed |Please see [here](https://github.com/prithvish-doshi-17/CalBot/issues?q=is%3Aissue+is%3Aclosed)|
 |.5|issues are discussed before they are closed |Every [closed issue](https://github.com/prithvish-doshi-17/CalBot/issues?q=is%3Aissue+is%3Aclosed) has a comment with the summary|
