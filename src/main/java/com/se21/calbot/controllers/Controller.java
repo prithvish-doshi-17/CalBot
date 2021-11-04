@@ -53,6 +53,12 @@ public class Controller {
      * @throws Exception generic exception 
      */
     //TODO: Change return type to JSON objects
+    /**
+     * Firstly, the function filters out all the upcoming events of the next 7 days
+     * Next, it calculates the difference of days between today and the deadline of that particular event
+     * Based on these two values, the algorithm calculates the number of hours that are required to be dedicated today for any given event
+     * These events (alongwith the required number of hours) is then displayed to the user
+     */
     public String arrangeEvents() throws Exception {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray scheduledEventList = calObj.retrieveEvents("primary").getJSONArray("items");
