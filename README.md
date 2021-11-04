@@ -86,6 +86,7 @@ Discord4J
 * Google Cloud Platform - We used Google calendar API by creating a project on [GCP](https://developers.google.com/workspace/guides/create-project), Check [Quickstart](https://developers.google.com/calendar/api/quickstart/java) for setting up Google calendar APIs. The ./Credentials.json of the project is required for authenticating the user.
 * Discord Developer Application -We created a [Discord Developer profile](https://discord.com/developers/docs/intro) for configuring a Discord BOT 
 * Environment variables can be found at [applications.properties](/src/main/resources/application.properties) and Credentials need to be updated at [credentials.json](/src/main/resources/credentials.json)
+* The user needs to create a server on Discord, and then visit this [link](https://discord.com/api/oauth2/authorize?client_id=904864050691854367&permissions=0&scope=bot%20applications.commands) to authorise the Discord bot to get added to that server
 * (Optional) To start project using docker run the following command in main directory
 ````
 docker build . -t 'image-name' //Don't forget the dot
