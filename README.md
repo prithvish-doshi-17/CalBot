@@ -96,6 +96,17 @@ docker run -dp 8080:8080 'image-name' //This will start app on port on 8080
 #### Here's a demo video showing how to initialize the bot and the usage of all commands
 https://user-images.githubusercontent.com/43064854/140317989-1e683eda-211d-4806-8e72-e88097eb6aa1.mp4
 
+Description of the video:
+* Firstly, a new server is created and the bot is authorised to access the server
+* test-event-1 is created and it can be seen on the calendar
+* test-event-2 is created and it can be seen on the calendar
+* !event command shows all the upcoming events
+* @show command shows the deadline for this week (upcoming 7 days), and how much time to allocate to each event today
+* Trying to add test-event-2 again isn't allowed by the bot as it already exists
+* Updating number of hours and deadline for test-event-1 gets reflected on the calendar
+* @show command shows the deadline for this week (upcoming 7 days), and how much time to allocate to each event today, considering updated test-event-1
+* !delete command shows deletion of test-event-1 from the calendar
+* Trying to delete test-event-1 again shows error message as the event doesn't exist on the calendar anymore
 
 ## Future Scope 🐾
 There are multiple dimensions to this project catering to the interests of
