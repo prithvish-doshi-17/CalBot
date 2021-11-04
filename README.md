@@ -6,6 +6,7 @@
 [![GitHub issues open](https://img.shields.io/github/issues/prithvish-doshi-17/CalBot)](https://github.com/prithvish-doshi-17/CalBot/issues)
 [![GitHub issues closed](https://img.shields.io/github/issues-closed/prithvish-doshi-17/CalBot)](https://github.com/prithvish-doshi-17/CalBot/issues)
 <img src="./badges/jacoco.svg">
+[![Check Style](https://github.com/prithvish-doshi-17/CalBot/actions/workflows/checkstyle.yml/badge.svg)](https://github.com/prithvish-doshi-17/CalBot/actions/workflows/checkstyle.yml)
 # aPAS
 <p align = center>
   <a href="">
@@ -39,8 +40,10 @@ https://user-images.githubusercontent.com/55187770/135385469-924f4ded-4768-4bac-
 ## Commands
 * **!oauth** - To get the authentication link for calendar
 * **!event** - To display a list of upcoming events on your calendar
-* **!add <!one word title> <!deadline mm/dd/yyyy> <!hours needed>** - To add events to your calendar
-* **!show**(still in development) - To arrange events in an optimised way according to the algo discussed in wiki
+* **!add <!title> <!hours needed> <!deadline mm/dd/yyyy>** - To add events to your calendar
+* **!show** - To show events in the upcoming week and display time needed to be dedicated to each event today
+* **!update <!title> <!new hours needed> <!new deadline mm/dd/yyyy>** - To update an already existing event with new number of hours and/or new deadline
+* **!delete <!title>** - To delete an event from your calendar
 
 ## Technologies
 <p>
@@ -71,7 +74,6 @@ Docker\
 Maven\
 Discord4J
 
-## Commands
 
 
 ## Getting started
@@ -83,20 +85,17 @@ Discord4J
 * Google Cloud Platform - We used Google calendar API by creating a project on [GCP](https://developers.google.com/workspace/guides/create-project), Check [Quickstart](https://developers.google.com/calendar/api/quickstart/java) for setting up Google calendar APIs. The ./Credentials.json of the project is required for authenticating the user.
 * Discord Developer Application -We created a [Discord Developer profile](https://discord.com/developers/docs/intro) for configuring a Discord BOT 
 * Environment variables can be found at [applications.properties](/src/main/resources/application.properties) and Credentials need to be updated at [credentials.json](/src/main/resources/credentials.json)
+* The user needs to create a server on Discord, and then visit this [link](https://discord.com/api/oauth2/authorize?client_id=904864050691854367&permissions=0&scope=bot%20applications.commands) to authorise the Discord bot to get added to that server
 * (Optional) To start project using docker run the following command in main directory
 ````
 docker build . -t 'image-name' //Don't forget the dot
-docker run -dp 8090:8090 'image-name' //This will start app on port on 8090
+docker run -dp 8080:8080 'image-name' //This will start app on port on 8080
 ````
 * [Developer Guide](https://elric97.github.io/CalBot/) 
 
 ## Future Scope 🐾
 There are multiple dimensions to this project catering to the interests of
 Various developers. Please check [CONTRIBUTING.md](./CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for contributing rules
-
-### Finish the pending work
-* Implement the [Algorithm](https://github.com/elric97/CalBot/wiki/Algorithm-to-compute-tasks-for-each-day) in class [Controller](https://github.com/elric97/CalBot/blob/master/src/main/java/com/se21/calbot/controllers/Controller.java)(function: [arrangeEvents](https://github.com/elric97/CalBot/blob/master/src/main/java/com/se21/calbot/controllers/Controller.java#:~:text=to%20JSON%20objects-,public%20String%20arrangeEvents()%20throws%20Exception%20%7B,%7D,-/**)).
-* Add more CRUD operations to give more flexibility to user to delete and edit events via chatbot.
 
 
 ### If you are a front-end developer 💻
@@ -113,11 +112,24 @@ Extending aPAS for these will require addition of service classes for these cale
 
 ### If you are an ML Enthusiast 🧑‍🔬
 * Why not use a voice-bot to set and manage events,Implementing this using an audio model can be an interesting extension to the project.
-* The priority algorithm can be personalized for a user based on the amount of time they spend on a particular task. 
+* The priority algorithm can be personalized for a user based on the amount of time they spend on a particular task.
+
+### If you want to have a hang of DevOps
+* Configure deployment on Heroku
+* Add more code analysis tools like SonarQube, etc
+
+## Updates from previous version
+* Completed algorithm implementation for scheduling events
+* Added functionality to delete an event
+* Added functionality to update an existing event with new number of hours and/or new deadline
+* Added functionality to stop users from creating multiple events of the same name
+* Implementation of token authentication
+* Added code coverage tools and testing support
+* Added unit tests to files and made them routinely execute on each push to master branch
 
 ## Team Members
-* Aditi Bhagwat
-* Anumit Garg
-* Palvit Garg
-* Rachit Sharma
-* Shree Ramasubramanian
+* Chao-Ting Hung
+* Prithvish Doshi
+* Seeya Prabhumoni
+* Shao-Yo Chao
+* Vraj Chokshi

@@ -53,6 +53,12 @@ public class Controller {
      * @throws Exception generic exception 
      */
     //TODO: Change return type to JSON objects
+    /**
+     * Firstly, the function filters out all the upcoming events of the next 7 days
+     * Next, it calculates the difference of days between today and the deadline of that particular event
+     * Based on these two values, the algorithm calculates the number of hours that are required to be dedicated today for any given event
+     * These events (alongwith the required number of hours) is then displayed to the user
+     */
     public String arrangeEvents() throws Exception {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray scheduledEventList = calObj.retrieveEvents("primary").getJSONArray("items");
@@ -96,7 +102,11 @@ public class Controller {
 
         return eventsThisWeek;
     }
-
+    
+    /**
+    * This function deletes the event mentioned by the user
+    * As the bot does not allow duplicate events to be created, name of the event works as a unique identifier for this operation
+    */
     public String deleteEvent(String title) throws Exception {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
@@ -112,7 +122,11 @@ public class Controller {
         }
         return "Please enter correct title for the event to be deleted";
     }
-
+    
+    /**
+    * This function is a helper function to check if an event of a given name already exists or not
+    * It is used as a checker before creating any new event
+    */
     public boolean eventExists(String title) throws Exception {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
@@ -127,17 +141,19 @@ public class Controller {
         }
         return false;
     }
-
+    
+    /**
+    * This function updates an existing event with updated number of hours and updated deadline
+    * It has an inbuilt checker, so that it returns a message if the user tries to update a non-existent event
+    */
     public String updateEvent(String title, String hours, String deadline) throws Exception {
         calObj = calendarFactory.getCalendar("Google");
         JSONArray unScheduledEventList = calObj.retrieveEvents(authenticationService.getCalId()).getJSONArray("items");
-        System.out.println(unScheduledEventList);
         for (int i = 0; i < unScheduledEventList.length(); i++) {
             JSONObject jsonLineItem = unScheduledEventList.getJSONObject(i);
             String[] eventProperties = jsonLineItem.getString("summary").split("#");
             if (title.equals(eventProperties[0]))
             {
-//                calObj.updateEvents();
                 calObj.deleteEvents(jsonLineItem.getString("id"));
                 calObj.addEvents(eventProperties[0], hours, deadline);
                 return "Event updated successfully!";
@@ -160,6 +176,10 @@ public class Controller {
         switch(opType)
         {
 
+            /*
+              This case first checks if an event already exists by the given name. If yes, it returns a message
+              Else, it calls the function to create a new event on the user's calendar
+             */
             case Add:
             {
                 try {
@@ -178,6 +198,9 @@ public class Controller {
 
             }
 
+            /*
+              This case calls the function to delete a particular event from the user's calendar
+             */
             case Delete:
             {
                 try {
@@ -187,7 +210,11 @@ public class Controller {
                     return "Please type in the format: !delete title";
                 }
             }
-            case Create: {}
+            case Create:
+
+            /*
+              This case calls the function to update a particular event in the user's calendar
+             */
             case Update:
             {
                 try {
@@ -197,11 +224,18 @@ public class Controller {
                     return "Please type in the format: !update title hours";
                 }
             }
+
+            /*
+              This case gives the output of the scheduler algorithm based on number of hours, deadline, etc.
+             */
             case Optimise:
             {
                 return this.arrangeEvents();
             }
 
+            /*
+              This case retrieves all the events present in the user's calendar
+             */
             case Retrieve:
             {
                 try {
