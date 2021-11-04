@@ -50,8 +50,8 @@ public class ControllerTest {
     @Mock
     CalendarFactory calendarFactory;
     private final String calenderApiMockReturn = "{" +
-            "items:[{summary: 'test1', start:{dateTime:'" + now.toString() + "'}, end:{dateTime:'" + now.toString() + "'}}, " +
-            "{summary: 'test2', start:{dateTime:'" + now.toString() + "'},end:{ dateTime:'" + now.toString() + "'}}]}";
+            "items:[{summary: '#1', start:{dateTime:'" + now.toString() + "'}, end:{dateTime:'" + now.toString() + "', timeZone: 'UTF+0'}}, " +
+            "{summary: '#2', start:{dateTime:'" + now.toString() + "'},end:{ dateTime:'" + now.toString() + "', timeZone: 'UTF+0'}}]}";
     @InjectMocks
     Controller mockController;
 
@@ -60,7 +60,7 @@ public class ControllerTest {
 
     private static final String existId = "test";
     private static final String nonExistId = "test1";
-    private static final LocalDateTime now = LocalDateTime.now();
+    private static final LocalDateTime now = LocalDateTime.now().plusDays(2);
 
     @BeforeEach
     void init() {
@@ -117,12 +117,14 @@ public class ControllerTest {
         authTokenAuthenticationFilter.doFilter(existId);
         // mock the return result of googleCalendarService
         doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
-        System.out.println(mockController.arrangeEvents());
         assertTrue(mockController.arrangeEvents().equals(
-                "test1    "+now.toString()+"\n" +
-                        "test2    "+now.toString()+"\n" +
-                        "test1    "+now.toString()+"\n" +
-                        "test2    "+now.toString()+"\n"));
+                "Here are the events for this week:\n" +
+                        "#1    Deadline:("+now.toString()+",TZ:UTF+0)\n" +
+                        "#2    Deadline:("+now.toString()+",TZ:UTF+0)\n" +
+                        "\n" +
+                        "Here are the activities to do for today (and the number of hours to be dedicated):\n" +
+                        " (Number of hours: 1.0)\n" +
+                        " (Number of hours: 2.0)\n"));
     }
 
     /**
