@@ -158,14 +158,15 @@ public class ControllerTest {
      * <p>
      * Test target: {@link com.se21.calbot.controllers.Controller#dataOperation(Enums.operationType, String...) dataOperation(Enums.operationType, String...))}
      * </p>
-     * When operating Enums.operationType.Add with correct parameters, return "done"
+     * When operating Enums.operationType.Add with correct parameters, return "Event added to your calendar!"
      */
     @Test
-    public void dataOperationAddShouldReturnDone() throws Exception {
+    public void dataOperationAddShouldbeDone() throws Exception {
         // mock a return result of googleCalendarService
         authTokenAuthenticationFilter.doFilter(existId);
         doReturn(Enums.calApiResponse.Success).when(googleCalendarService).addEvents(anyString(), anyString(), anyString());
         doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
+        // create an actual and expect result
         String actual = mockController.dataOperation(Enums.operationType.Add, "title", "1", now.toString());
         String expect = "Event added to your calendar!";
         assertEquals(expect, actual);
@@ -197,6 +198,7 @@ public class ControllerTest {
         authTokenAuthenticationFilter.doFilter(existId);
         // mock the return result of googleCalendarService
         doReturn(new JSONObject(calenderApiMockReturn)).when(googleCalendarService).retrieveEvents(anyString());
+        // create an actual and expect result
         String actual = mockController.dataOperation(Enums.operationType.Retrieve);
         String expect = "Here are all the upcoming events on your calendar:\n" +
                 "#1    " + now.toString() + "\n" +
