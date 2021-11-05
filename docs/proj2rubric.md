@@ -2,7 +2,7 @@
 |Maximum Score|Notes|Self-Evaluation Score|Evidence|
 |-|-----|---|---------|
 |.5| short release cycles|0.5|2 release cycles over the duration of project 2|
-|.5| workload is spread over the whole team (so one team member is often Xtimes more productive than the others...|0.5|Everyone has almost same [number of commits](https://github.com/prithvish-doshi-17/CalBot/pulse)|
+|.5| workload is spread over the whole team (so one team member is often Xtimes more productive than the others...|0.5|Evidence is [here](https://github.com/prithvish-doshi-17/CalBot/issues?q=is%3Aissue+is%3Aclosed).Everyone has almost same [number of commits](https://github.com/prithvish-doshi-17/CalBot/pulse)|
 |.5|Docs: why: docs tell a story, motivate the whole thing, deliver a punchline that makes you want to rush out and use the thing |0.5|Evidence in [Readme](https://github.com/prithvish-doshi-17/CalBot/blob/master/README.md) |
 |.5|the files CONTRIBUTING.md lists coding standards and lots of tips on how to extend the system without screwing things up  |0.5|Evidence in [Contributing.md](https://github.com/prithvish-doshi-17/CalBot/blob/master/CONTRIBUTING.md) |
 |.5|Docs: doco generated , format not ugly  |0.5|Evidence in [Readme](https://github.com/prithvish-doshi-17/CalBot/blob/master/README.md) |
